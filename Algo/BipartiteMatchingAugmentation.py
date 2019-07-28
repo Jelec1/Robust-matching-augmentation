@@ -1,5 +1,6 @@
 import networkx as nx
 from typing import List, Dict, Set
+import math
 
 
 def esweran_tarjan(G: nx.DiGraph):
@@ -172,5 +173,47 @@ def augmentGraph(G: nx.DiGraph, M: Set):
     pass
 
 
-def sourceCover():
-    return {}
+def sourceCover(D: nx.DiGraph, sources, sinks):
+    # TODO use better dictionaries for logarithmic complexity
+    # TODO use union find data structure for sets
+
+    R: nx.DiGraph = D.reverse(copy=False)
+    children:Dict[object, Set] = {}
+
+    def markVertex(sink, vertex):
+        if vertex in children:
+            children[vertex].add(sink)
+        else:
+            children[vertex] = {sink}
+            for child in R.neighbors(vertex):
+                markVertex(sink, child)
+
+    for sink in sources:
+        markVertex(sink, sink)
+
+    def collectSinks(vertex):
+        for father in R.neighbors(vertex):
+            children[father] = children[father] + children[vertex]
+
+    for sink in sinks:
+        collectSinks(sink)
+
+
+    # We now solve the source cover problem using greeedy algorithm
+    cover: Set = set()
+    covered: Set = set()
+
+    while len(covered) < len(sinks):
+        r_min = math.inf
+        best_source = None
+
+        for source in sources:
+            r_i = len(children[source]) / len(children[source] - covered)
+            if r_i < r_min:
+                best_source = source
+                r_min = r_i
+
+        covered = covered + children[best_source]
+        cover.add(best_source)
+
+    return cover

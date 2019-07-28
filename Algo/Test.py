@@ -1,20 +1,22 @@
 import networkx as nx
+from Algo.BipartiteMatchingAugmentation import augmentGraph
 
 
-G = nx.DiGraph()
-G.add_nodes_from({'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'})
-G.add_edges_from({('A', 'B'),
-                 ('B', 'D'),
-                 ('D', 'F'),
-                 ('F', 'H'),
-                 ('A', 'C'),
-                 ('C', 'E'),
-                 ('E', 'G'),
-                 ('G', 'H'),
-                 ('D', 'A')})
+G = nx.Graph()
 
 
-print(nx.dfs_tree(G, source = 'A'))
+U = [i for i in range(6)]
+W = [i for i in range(5, 11)]
 
-print(nx.drawing.nx_agraph.to_agraph )
+G.add_nodes_from(U + W)
 
+#matching = [(i, i+5) for i in range(5)]
+matching = [(0,2), (1,3)]
+
+G.add_edges_from(matching)
+
+match = {}
+for e in matching:
+    match[e[0]] = e[1]
+
+augmentGraph(G, match)
