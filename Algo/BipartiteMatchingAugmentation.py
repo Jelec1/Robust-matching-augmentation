@@ -18,14 +18,11 @@ def esweran_tarjan(G: nx.DiGraph):
         elif G.in_degree(node) > 0 and G.out_degree(node) == 0:
             sources.add(node)
 
-
-
-
     marked_nodes = set()  # unmark all nodes
     unmarked_nodes = set()
     i = 0
     while len(unmarked_nodes.intersection(unmarked_nodes)) > 0:
-        v = unmarked_nodes.intersection(unmarked_nodes) # some unmarked souce
+        v = unmarked_nodes.intersection(unmarked_nodes)  # some unmarked souce
         w = 0
         sink_not_found = True
 
@@ -48,19 +45,12 @@ def esweran_tarjan(G: nx.DiGraph):
         end SEARCH
         """
 
-
         if w != 0:
             i = i + 1
             v_i[i] = v
             w_i[i] = w
 
     p = i
-
-
-
-
-
-
 
 
 # Param us bipartite undirected graph (U, W, E)
@@ -115,7 +105,6 @@ def augmentGraph(G: nx.DiGraph, M: Set):
                     if v != u_e:
                         Di[i].remove_node(v)
 
-
         condensation_i[i] = nx.algorithms.components.condensation(Di[i])
         # Condensation_i[i] has an attribute "members" mapping vertices of the condensation to the original vertices
         # Still need to figure out whether I should do condensation together with DFS as suggested in the paper
@@ -124,7 +113,7 @@ def augmentGraph(G: nx.DiGraph, M: Set):
 
     sourcesAndSinks: Set = set()
 
-    for nodeIn in condensation_i[0].in_degree():   # iterates over doubles (vert, in_degree)
+    for nodeIn in condensation_i[0].in_degree():  # iterates over doubles (vert, in_degree)
         node = nodeIn[0]
         inDegree = nodeIn[1]
 
@@ -145,7 +134,6 @@ def augmentGraph(G: nx.DiGraph, M: Set):
         if len(node.members) == 1:
             X.add(node)
 
-
     DFS_SourcesAndSinksVerts: Set = set()
 
     DFS_Xverts: Set = set()
@@ -157,47 +145,36 @@ def augmentGraph(G: nx.DiGraph, M: Set):
     for x in X:
         DFS_Xverts.add(nx.algorithms.traversal.depth_first_search.dfs_tree(condensation_i[0], x))
 
-
     D_dash: nx.DiGraph = condensation_i[0].subgraph(DFS_Xverts.intersection(DFS_SourcesAndSinksVerts))
-
-
-
-
-
-
-
-
-
-
 
     pass
 
 
-def sourceCover(D: nx.DiGraph, sources, sinks):
+def sourceCover(D: nx.DiGraph, sources: Set, sinks: Set):
     # TODO use better dictionaries for logarithmic complexity
     # TODO use union find data structure for sets
+    # TODO split the graph into components and calculate source cover on these (also in parallel)
 
     R: nx.DiGraph = D.reverse(copy=False)
-    children:Dict[object, Set] = {}
+    children: Dict[object, Set] = {}
+    vertexRank: Dict[object, int] = {}
 
-    def markVertex(sink, vertex):
-        if vertex in children:
-            children[vertex].add(sink)
+    def markVertex(vertex, parent):
+        if vertex not in vertexRank:  # as we can be sure that that vertex has never ever been accessed before
+            vertexRank[vertex] = R.in_degree(vertex)
+            if parent is None:
+                children[vertex] = {vertex}
+            else:
+                children[vertex] = children[parent]
         else:
-            children[vertex] = {sink}
+            children[vertex] = children[vertex] | children[parent]  # it surely already has an entry
+        vertexRank[vertex] = vertexRank[vertex] - 1  # it is surely >= 1 as we must have gotten there from a parent
+        if vertexRank[vertex] <= 0:  # for source it can actually go under 1
             for child in R.neighbors(vertex):
-                markVertex(sink, child)
-
-    for sink in sources:
-        markVertex(sink, sink)
-
-    def collectSinks(vertex):
-        for father in R.neighbors(vertex):
-            children[father] = children[father] + children[vertex]
+                markVertex(child, vertex)
 
     for sink in sinks:
-        collectSinks(sink)
-
+        markVertex(sink, None)
 
     # We now solve the source cover problem using greeedy algorithm
     cover: Set = set()
@@ -206,14 +183,21 @@ def sourceCover(D: nx.DiGraph, sources, sinks):
     while len(covered) < len(sinks):
         r_min = math.inf
         best_source = None
+        discard = set()
 
         for source in sources:
-            r_i = len(children[source]) / len(children[source] - covered)
+            will_be_covered = len(children[source] - covered)
+            if will_be_covered == 0:
+                continue
+
+            r_i = 1 / will_be_covered # c_i = len(children[source])
             if r_i < r_min:
                 best_source = source
                 r_min = r_i
 
-        covered = covered + children[best_source]
+        sources = sources - discard
+        covered = covered | children[best_source]
         cover.add(best_source)
+        sources.remove(best_source)
 
     return cover
