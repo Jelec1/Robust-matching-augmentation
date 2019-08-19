@@ -2,6 +2,15 @@ import networkx as nx
 from Algo.BipartiteMatchingAugmentation import augmentGraph
 
 
+
+a = {1,2,0}
+
+a.remove(0)
+
+
+
+
+
 G = nx.Graph()
 
 
@@ -19,4 +28,4 @@ match = {}
 for e in matching:
     match[e[0]] = e[1]
 
-augmentGraph(G, match)
+augmentGraph(G, matching)

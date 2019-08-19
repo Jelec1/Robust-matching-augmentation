@@ -26,24 +26,19 @@ def esweran_tarjan(G: nx.DiGraph):
         w = 0
         sink_not_found = True
 
-        """
-        Procedure SEARCH(X)
-        """
-        if v == 'is unmarked':
-            if v == 'is a sink':
-                w = v
-                sink_not_found = False
-            "mark v"
+        def search(v):
+            if v in unmarked_nodes:  # is unmarked
+                if v in sinks:  # is a sink
+                    w = v
+                    sink_not_found = False
+                marked_nodes.add(v)  # mark v
+                unmarked_nodes.remove(v)
 
-            # It is usually more convenient (and faster) to access the adjacency dictionary asG[n]:
-            # [n for n in G[0]]
-            for y in G.neighbors(v):
-                if sink_not_found:
-                    search(y)
-
-        """
-        end SEARCH
-        """
+                # It is usually more convenient (and faster) to access the adjacency dictionary asG[n]:
+                # [n for n in G[0]]
+                for y in G.neighbors(v):
+                    if sink_not_found:
+                        search(y)
 
         if w != 0:
             i = i + 1
@@ -72,83 +67,54 @@ def augmentGraph(G: nx.DiGraph, M: Set):
     # Now we remove for all u_e adjacent to a critical edge in matching, all edges but u_e reachable in u_e
     # Note that edge is critical iff strongly connected component u_e belongs to is trivial
 
-    # !!!!!!!!Consult time complexity of this with  Obdrzalek
-    """Unfortunately, this package cannot return a strongly connected component with a source vertex
-    matchingLeftNodes = {u[0] for u in matching}
-
-    while len(matchingLeftNodes) > 0: #note that len on sets and lists in python is in O(1)
-
-        #We know that the set is not empty
-        u = matchingLeftNodes.pop()
-    """
-
     Di: List[nx.DiGraph] = [D.copy(), D.copy().reverse()]  # This is D resp D' in the paper
     condensation_i: List[nx.DiGraph] = [nx.DiGraph(), nx.DiGraph()]  # Corresponds to C(D) resp. C(D')
-    Ci = [None, None]  # Solution C_i of instances A_i, i \in {1,2}
-    strongComponents_i: List = [None, None]
+    Ci: List = [None, None]  # Solution C_i of instances A_i, i \in {1,2}
+    sources_i:List[Set] = List[None, None]
+    sinks_i:List[Set] = List[None, None]
 
-    criticalVertices = set()
+    X:Set = set()
 
     for i in {0, 1}:
 
-        strongComponents_i[i] = nx.strongly_connected_components(Di[i])
+        condensation_i[i] = nx.algorithms.components.condensation(Di[i])
         # Note that this actually uses Tarjan's algorithm as suggested in the paper
         # Actually, consider using it directly rather than assigning it to a variable
 
-        for component in strongComponents_i[i]:
-            if len(component) == 1:  # component is trivial
-                u_e = component[0]
-                criticalVertices.add(u_e)
+        for node in condensation_i[i]:
+            if len(node.members) == 1:  # component is trivial
+                u_e = node.pop()  # This is the only member of the set, nothing better
+                node.add(u_e)
+
+                X.add(node)
 
                 # Could spare some time by deleting edges from the reverse
-                for v in nx.algorithms.traversal.depth_first_search.dfs_edges(Di[i], u_e):
-                    if v != u_e:
+                for v in nx.algorithms.traversal.depth_first_search.dfs_edges(condensation_i[i], node):
+                    if v != node:
                         Di[i].remove_node(v)
 
-        condensation_i[i] = nx.algorithms.components.condensation(Di[i])
-        # Condensation_i[i] has an attribute "members" mapping vertices of the condensation to the original vertices
-        # Still need to figure out whether I should do condensation together with DFS as suggested in the paper
+                        if v in X:
+                            X.remove(v)
 
-        Ci[i] = sourceCover(Ci[i])
+        for nodeIn in condensation_i[0].in_degree():  # iterates over doubles (vert, in_degree)
+            node = nodeIn[0]
+            inDegree = nodeIn[1]
 
-    sourcesAndSinks: Set = set()
+            if inDegree == 0:
+                sources_i.add(node)
 
-    for nodeIn in condensation_i[0].in_degree():  # iterates over doubles (vert, in_degree)
-        node = nodeIn[0]
-        inDegree = nodeIn[1]
+        for nodeIn in condensation_i[0].out_degree():  # iterates over doubles (vert, in_degree)
+            node = nodeIn[0]
+            inDegree = nodeIn[1]
 
-        if inDegree == 0:
-            sourcesAndSinks.add(node)  # add all sources
+            if inDegree == 0:
+                sinks_i.add(node)
 
-    for nodeOut in condensation_i[1].out_degree():
-        node = nodeOut[0]
-        outDegree = nodeOut[1]
+        Ci[i] = sourceCover(condensation_i[i])
 
-        if outDegree == 0:
-            sourcesAndSinks.add(node)  # add all sinks
 
-    X = set()
-
-    for node in condensation_i[0]:
-        # Note that node adjoint an edge is critical iff corresponding strongly connected component is trivial
-        if len(node.members) == 1:
-            X.add(node)
-
-    DFS_SourcesAndSinksVerts: Set = set()
-
-    DFS_Xverts: Set = set()
-
-    for s in sourcesAndSinks:
-        # Find out how to get index of given node
-        DFS_SourcesAndSinksVerts.add(nx.algorithms.traversal.depth_first_search.dfs_tree(condensation_i[0], s))
-
-    for x in X:
-        DFS_Xverts.add(nx.algorithms.traversal.depth_first_search.dfs_tree(condensation_i[0], x))
-
-    D_dash: nx.DiGraph = condensation_i[0].subgraph(DFS_Xverts.intersection(DFS_SourcesAndSinksVerts))
 
     pass
-
 
 def sourceCover(D: nx.DiGraph, sources: Set, sinks: Set):
     # TODO use better dictionaries for logarithmic complexity
@@ -159,7 +125,7 @@ def sourceCover(D: nx.DiGraph, sources: Set, sinks: Set):
     children: Dict[object, Set] = {}
     vertexRank: Dict[object, int] = {}
 
-    def markVertex(vertex, parent):
+    def sinkAccessibility(vertex, parent):
         if vertex not in vertexRank:  # as we can be sure that that vertex has never ever been accessed before
             vertexRank[vertex] = R.in_degree(vertex)
             if parent is None:
@@ -171,12 +137,12 @@ def sourceCover(D: nx.DiGraph, sources: Set, sinks: Set):
         vertexRank[vertex] = vertexRank[vertex] - 1  # it is surely >= 1 as we must have gotten there from a parent
         if vertexRank[vertex] <= 0:  # for source it can actually go under 1
             for child in R.neighbors(vertex):
-                markVertex(child, vertex)
+                sinkAccessibility(child, vertex)
 
     for sink in sinks:
-        markVertex(sink, None)
+        sinkAccessibility(sink, None)
 
-    # We now solve the source cover problem using greeedy algorithm
+    # We now solve the source cover problem using greedy algorithm
     cover: Set = set()
     covered: Set = set()
 
@@ -190,7 +156,7 @@ def sourceCover(D: nx.DiGraph, sources: Set, sinks: Set):
             if will_be_covered == 0:
                 continue
 
-            r_i = 1 / will_be_covered # c_i = len(children[source])
+            r_i = 1 / will_be_covered  # c_i = len(children[source])
             if r_i < r_min:
                 best_source = source
                 r_min = r_i

@@ -7,7 +7,7 @@ import time
 
 for i in range(1):
     start = time.time()
-    G:nx.DiGraph =  nx.generators.classic.balanced_tree(2,14,create_using=nx.DiGraph)
+    G:nx.DiGraph = nx.generators.classic.balanced_tree(2,16,create_using=nx.DiGraph)
     print(time.time() - start)
     # G = nx.algorithms.traversal.dfs_tree(G, 0)
     sources = set()
