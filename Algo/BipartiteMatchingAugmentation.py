@@ -51,12 +51,11 @@ def esweran_tarjan(G: nx.DiGraph):
 # Param us bipartite undirected graph (U, W, E)
 # Matching is expected to be a set of doubles (u, v) corresponding to a matching
 # where u is from A and vis from B of a bipartite graph
-def augmentGraph(G: nx.DiGraph, M: Set):
+def augmentGraph(G: nx.Graph, M: Dict):
     D = nx.DiGraph()
 
-    for edge in M:
-        u = edge[0]
-        w = edge[1]
+    for u in M:  # Looping through a dictionary
+        w = M[u]
         # We cycle through all the edges in the set W to construct a directed graph D(G,M) from Theorem 11
         for uPrime in G.neighbors(w):
             # This is the construction of A, where edge[0] is u, edge[1] is w
@@ -69,11 +68,12 @@ def augmentGraph(G: nx.DiGraph, M: Set):
 
     Di: List[nx.DiGraph] = [D.copy(), D.copy().reverse()]  # This is D resp D' in the paper
     condensation_i: List[nx.DiGraph] = [nx.DiGraph(), nx.DiGraph()]  # Corresponds to C(D) resp. C(D')
+    A_i: List = [None, None]
     Ci: List = [None, None]  # Solution C_i of instances A_i, i \in {1,2}
-    sources_i:List[Set] = List[None, None]
-    sinks_i:List[Set] = List[None, None]
+    sources_i: List[Set] = List[set(), set()]
+    sinks_i: List[Set] = List[set(), set()]
 
-    X:Set = set()
+    X: Set = set()
 
     for i in {0, 1}:
 
@@ -96,25 +96,69 @@ def augmentGraph(G: nx.DiGraph, M: Set):
                         if v in X:
                             X.remove(v)
 
-        for nodeIn in condensation_i[0].in_degree():  # iterates over doubles (vert, in_degree)
+        A_i[i] = nx.algorithms.components.condensation(condensation_i)
+
+        for nodeIn in A_i[0].in_degree():  # iterates over doubles (vert, in_degree)
             node = nodeIn[0]
             inDegree = nodeIn[1]
 
             if inDegree == 0:
-                sources_i.add(node)
+                sources_i[i].add(node)
 
-        for nodeIn in condensation_i[0].out_degree():  # iterates over doubles (vert, in_degree)
+        for nodeIn in A_i[0].out_degree():  # iterates over doubles (vert, in_degree)
             node = nodeIn[0]
             inDegree = nodeIn[1]
 
             if inDegree == 0:
-                sinks_i.add(node)
+                sinks_i[i].add(node)
 
-        Ci[i] = sourceCover(condensation_i[i])
+        Ci[i] = sourceCover(A_i[i], sources_i[i], sinks_i[i])
 
+    def markVertices(graph: nx.Graph, vertex, mark, maxMark: int):  # We will by this method mark vertices using DFS
+        for neighbour in D.neighbors(vertex):
+            if "mark" not in D.nodes[neighbour]:
+                graph.nodes[neighbour][mark] = 0
 
+            if graph.nodes[neighbour][mark] < maxMark:
+                graph.nodes[neighbour][mark] += 1
+                markVertices(graph, neighbour, mark, maxMark)
+
+    for source in Ci[0]:
+        markVertices(D, source, "C1X", 1)
+
+    for source in Ci[0]:
+        markVertices(D.reverse(), source, "XC2", 1)
+
+    for critical in X:
+        markVertices(D.reverse(), critical, "C1X", 2)
+        markVertices(D, critical, "XC2", 2)
+
+    D_dash_vertices: Set = set()
+
+    for node in D:
+        if ("C1X" in D.nodes[node] and D.nodes[node]["C1X"] == 2) \
+                or ("XC2" in D.nodes[node] and D.nodes[node]["XC2"] == 2):
+            D_dash_vertices.add(node)
+
+    D_dash = nx.classes.function.induced_subgraph(condensation_i[0], D_dash_vertices)
+
+    L_star = esweran_tarjan(D_dash)
+
+    L = set()
+
+    for edge in L_star:
+        u = edge[0]
+        v = edge[1]
+        L.add((u.memberers.pop(), v.members.pop()))
+
+    augmenting_edges = set()
+
+    for edge in L:
+        u = edge[0]
+        w = edge[1]
 
     pass
+
 
 def sourceCover(D: nx.DiGraph, sources: Set, sinks: Set):
     # TODO use better dictionaries for logarithmic complexity
