@@ -1,61 +1,31 @@
 import networkx as nx
 from typing import List, Dict, Set
-import math
 
-
-def esweran_tarjan(G: nx.DiGraph):
-    sink_not_found = True
-
-    v_i = set()
-    w_i = set()
-
-    sources: Set = set()
-    sinks: Set = set()
-
-    for node in G:
-        if G.in_degree(node) == 0 and G.out_degree(node) > 0:
-            sources.add(node)
-        elif G.in_degree(node) > 0 and G.out_degree(node) == 0:
-            sources.add(node)
-
-    marked_nodes = set()  # unmark all nodes
-    unmarked_nodes = set()
-    i = 0
-    while len(unmarked_nodes.intersection(unmarked_nodes)) > 0:
-        v = unmarked_nodes.intersection(unmarked_nodes)  # some unmarked souce
-        w = 0
-        sink_not_found = True
-
-        def search(v):
-            if v in unmarked_nodes:  # is unmarked
-                if v in sinks:  # is a sink
-                    w = v
-                    sink_not_found = False
-                marked_nodes.add(v)  # mark v
-                unmarked_nodes.remove(v)
-
-                # It is usually more convenient (and faster) to access the adjacency dictionary asG[n]:
-                # [n for n in G[0]]
-                for y in G.neighbors(v):
-                    if sink_not_found:
-                        search(y)
-
-        if w != 0:
-            i = i + 1
-            v_i[i] = v
-            w_i[i] = w
-
-    p = i
+from Algo.EswaranTarjan import eswaran_tarjan
+from Algo.SourceCover import sourceCover
 
 
 # Param us bipartite undirected graph (U, W, E)
 # Matching is expected to be a set of doubles (u, v) corresponding to a matching
 # where u is from A and vis from B of a bipartite graph
-def augmentGraph(G: nx.Graph, M: Dict):
-    D = nx.DiGraph()
+def augmentGraph(G: nx.Graph, A: Set):
+    D: nx.DiGraph = nx.DiGraph()
+
+    if not nx.algorithms.bipartite.is_bipartite_node_set(G, A):
+        raise Exception("G is not bipartite")
+
+    M: Dict = nx.algorithms.bipartite.eppstein_matching(G, A)
+
+    if not nx.algorithms.is_perfect_matching(G, M):
+        raise Exception("G does not admit a perfect matching")
 
     for u in M:  # Looping through a dictionary
-        w = M[u]
+        if u not in A:
+            continue
+
+        w = M[u]  # Just to be sure we have one
+        D.add_node(u)  # This is neccessary as not always edge is added
+
         # We cycle through all the edges in the set W to construct a directed graph D(G,M) from Theorem 11
         for uPrime in G.neighbors(w):
             # This is the construction of A, where edge[0] is u, edge[1] is w
@@ -70,8 +40,8 @@ def augmentGraph(G: nx.Graph, M: Dict):
     condensation_i: List[nx.DiGraph] = [nx.DiGraph(), nx.DiGraph()]  # Corresponds to C(D) resp. C(D')
     A_i: List = [None, None]
     Ci: List = [None, None]  # Solution C_i of instances A_i, i \in {1,2}
-    sources_i: List[Set] = List[set(), set()]
-    sinks_i: List[Set] = List[set(), set()]
+    sources_i: List[Set] = [set(), set()]
+    sinks_i: List[Set] = [set(), set()]
 
     X: Set = set()
 
@@ -82,9 +52,10 @@ def augmentGraph(G: nx.Graph, M: Dict):
         # Actually, consider using it directly rather than assigning it to a variable
 
         for node in condensation_i[i]:
-            if len(node.members) == 1:  # component is trivial
-                u_e = node.pop()  # This is the only member of the set, nothing better
-                node.add(u_e)
+
+            if len(condensation_i[i].nodes[node]['members']) == 1:  # component is trivial
+                u_e = condensation_i[i].nodes[node]['members'].pop()  # Python allows it only like this
+                condensation_i[i].nodes[node]['members'].add(u_e)
 
                 X.add(node)
 
@@ -96,7 +67,7 @@ def augmentGraph(G: nx.Graph, M: Dict):
                         if v in X:
                             X.remove(v)
 
-        A_i[i] = nx.algorithms.components.condensation(condensation_i)
+        A_i[i] = nx.algorithms.components.condensation(condensation_i[i])
 
         for nodeIn in A_i[0].in_degree():  # iterates over doubles (vert, in_degree)
             node = nodeIn[0]
@@ -114,35 +85,36 @@ def augmentGraph(G: nx.Graph, M: Dict):
 
         Ci[i] = sourceCover(A_i[i], sources_i[i], sinks_i[i])
 
-    def markVertices(graph: nx.Graph, vertex, mark, maxMark: int):  # We will by this method mark vertices using DFS
-        for neighbour in D.neighbors(vertex):
-            if "mark" not in D.nodes[neighbour]:
-                graph.nodes[neighbour][mark] = 0
+    # Consider just marking edges yielded from DFS traversal
+    def markVertices(graph: nx.DiGraph, vertex, mark, maxMark: int):  # We will by this method mark vertices using DFS
+        if mark not in graph.nodes[vertex]:
+            graph.nodes[vertex][mark] = 0
 
-            if graph.nodes[neighbour][mark] < maxMark:
-                graph.nodes[neighbour][mark] += 1
-                markVertices(graph, neighbour, mark, maxMark)
+        if graph.nodes[vertex][mark] < maxMark:
+            graph.nodes[vertex][mark] += 1
+        for neighbour in graph.neighbors(vertex):
+            markVertices(graph, neighbour, mark, maxMark)
 
-    for source in Ci[0]:
-        markVertices(D, source, "C1X", 1)
+    for source in Ci[0]:   # condensation_i[i].nodes[node]['members']
+        markVertices(condensation_i[0], source, "C1X", 1)
 
-    for source in Ci[0]:
-        markVertices(D.reverse(), source, "XC2", 1)
+    for source in Ci[1]:
+        markVertices(condensation_i[0].reverse(copy=False), source, "XC2", 1)
 
     for critical in X:
-        markVertices(D.reverse(), critical, "C1X", 2)
-        markVertices(D, critical, "XC2", 2)
+        markVertices(condensation_i[0].reverse(copy=False), critical, "C1X", 2)
+        markVertices(condensation_i[0], critical, "XC2", 2)
 
     D_dash_vertices: Set = set()
 
-    for node in D:
-        if ("C1X" in D.nodes[node] and D.nodes[node]["C1X"] == 2) \
-                or ("XC2" in D.nodes[node] and D.nodes[node]["XC2"] == 2):
+    for node in condensation_i[0]:
+        if ("C1X" in condensation_i[0].nodes[node] and condensation_i[0].nodes[node]["C1X"] == 2) \
+                or ("XC2" in condensation_i[0].nodes[node] and condensation_i[0].nodes[node]["XC2"] == 2):
             D_dash_vertices.add(node)
 
     D_dash = nx.classes.function.induced_subgraph(condensation_i[0], D_dash_vertices)
 
-    L_star = esweran_tarjan(D_dash)
+    L_star = eswaran_tarjan(D_dash)
 
     L = set()
 
@@ -158,56 +130,3 @@ def augmentGraph(G: nx.Graph, M: Dict):
         w = edge[1]
 
     pass
-
-
-def sourceCover(D: nx.DiGraph, sources: Set, sinks: Set):
-    # TODO use better dictionaries for logarithmic complexity
-    # TODO use union find data structure for sets
-    # TODO split the graph into components and calculate source cover on these (also in parallel)
-
-    R: nx.DiGraph = D.reverse(copy=False)
-    children: Dict[object, Set] = {}
-    vertexRank: Dict[object, int] = {}
-
-    def sinkAccessibility(vertex, parent):
-        if vertex not in vertexRank:  # as we can be sure that that vertex has never ever been accessed before
-            vertexRank[vertex] = R.in_degree(vertex)
-            if parent is None:
-                children[vertex] = {vertex}
-            else:
-                children[vertex] = children[parent]
-        else:
-            children[vertex] = children[vertex] | children[parent]  # it surely already has an entry
-        vertexRank[vertex] = vertexRank[vertex] - 1  # it is surely >= 1 as we must have gotten there from a parent
-        if vertexRank[vertex] <= 0:  # for source it can actually go under 1
-            for child in R.neighbors(vertex):
-                sinkAccessibility(child, vertex)
-
-    for sink in sinks:
-        sinkAccessibility(sink, None)
-
-    # We now solve the source cover problem using greedy algorithm
-    cover: Set = set()
-    covered: Set = set()
-
-    while len(covered) < len(sinks):
-        r_min = math.inf
-        best_source = None
-        discard = set()
-
-        for source in sources:
-            will_be_covered = len(children[source] - covered)
-            if will_be_covered == 0:
-                continue
-
-            r_i = 1 / will_be_covered  # c_i = len(children[source])
-            if r_i < r_min:
-                best_source = source
-                r_min = r_i
-
-        sources = sources - discard
-        covered = covered | children[best_source]
-        cover.add(best_source)
-        sources.remove(best_source)
-
-    return cover

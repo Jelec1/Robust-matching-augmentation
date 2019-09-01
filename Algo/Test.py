@@ -3,12 +3,11 @@ from Algo.BipartiteMatchingAugmentation import augmentGraph
 
 
 
-a = {}
-a[0] = "a"
-a[1] = "b"
-a[2] = "c"
 
-for el in a:
-    print(el)
+G = nx.Graph()
+G.add_edges_from({(0,1), (2,3)})
 
 
+A = set()
+A.update({1,2,3})
+augmentGraph(G, {0, 2})
