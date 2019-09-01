@@ -1,14 +1,22 @@
 import networkx as nx
 from typing import List, Set
+from networkx.utils.decorators import not_implemented_for
 
+@not_implemented_for('undirected')
+@not_implemented_for('multigraph')
+def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False):
 
-def eswaran_tarjan(G: nx.DiGraph):
-    # TODO Think about adding it's own condensation as a parameter
+    #if not G.is_directed():
+    #    raise nx.NetworkXNotImplemented("G is not a directed graph")
 
-    if not G.is_directed():
-        raise nx.NetworkXNotImplemented("G is not a directed graph")
+    G_condensation: nx.DiGraph
 
-    G_condensation = nx.algorithms.condensation(G)
+    if not is_condensation:
+        G_condensation = nx.algorithms.condensation(G)
+    else:
+        if not nx.algorithms.dag.is_directed_acyclic_graph(G):
+            raise nx.HasACycle("G has a cycle, acyclic graph expected")
+        G_condensation = G
 
     if len(G_condensation.nodes) <= 1:
         return set()
