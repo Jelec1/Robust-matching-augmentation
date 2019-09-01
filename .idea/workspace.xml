@@ -7,8 +7,8 @@
     <list default="true" id="7bb0d0d6-1a1a-4ae6-ac2c-9e59be494d4f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/dictionaries/tom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/tom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Algo/BipartiteMatchingAugmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Algo/BipartiteMatchingAugmentation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Algo/EswaranTarjan.py" beforeDir="false" afterPath="$PROJECT_DIR$/Algo/EswaranTarjan.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Algo/Test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Algo/Test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Tests/TestEswaranTarjan.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/TestEswaranTarjan.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -33,11 +33,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Algo/BipartiteMatchingAugmentation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1023">
-              <caret line="48" lean-forward="true" selection-start-line="48" selection-end-line="48" />
+            <state relative-caret-position="176">
+              <caret line="64" column="44" lean-forward="true" selection-start-line="64" selection-start-column="44" selection-end-line="64" selection-end-column="44" />
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
               </folding>
@@ -45,11 +45,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Algo/EswaranTarjan.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
-              <caret line="51" column="29" selection-start-line="51" selection-start-column="29" selection-end-line="51" selection-end-column="29" />
+            <state relative-caret-position="-238">
+              <caret line="94" column="18" selection-start-line="94" selection-start-column="18" selection-end-line="94" selection-end-column="18" />
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
               </folding>
@@ -60,8 +60,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Tests/TestEswaranTarjan.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="154">
-              <caret line="33" column="26" lean-forward="true" selection-start-line="33" selection-start-column="26" selection-end-line="33" selection-end-column="26" />
+            <state relative-caret-position="60">
+              <caret line="7" column="8" lean-forward="true" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
               <folding>
                 <element signature="e#0#68#0" expanded="true" />
               </folding>
@@ -107,11 +107,11 @@
         <option value="$PROJECT_DIR$/Tests/TestAugmentation.py" />
         <option value="$PROJECT_DIR$/Tests/TestSourceCover.py" />
         <option value="$PROJECT_DIR$/Algo/SourceCover.py" />
-        <option value="$PROJECT_DIR$/Algo/BipartiteMatchingAugmentation.py" />
         <option value="$PROJECT_DIR$/Algo/Exceptions.py" />
         <option value="$PROJECT_DIR$/Algo/Test.py" />
         <option value="$PROJECT_DIR$/Tests/TestEswaranTarjan.py" />
         <option value="$PROJECT_DIR$/Algo/EswaranTarjan.py" />
+        <option value="$PROJECT_DIR$/Algo/BipartiteMatchingAugmentation.py" />
       </list>
     </option>
   </component>
@@ -363,7 +363,7 @@
       <workItem from="1566983811131" duration="2038000" />
       <workItem from="1567149576126" duration="9303000" />
       <workItem from="1567276366843" duration="18124000" />
-      <workItem from="1567354206490" duration="4279000" />
+      <workItem from="1567354206490" duration="11664000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1563831110424</created>
@@ -407,43 +407,57 @@
       <option name="project" value="LOCAL" />
       <updated>1567346611136</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="EswaranTarjan:&#10;Edited search procedure from tail recursion to for cycle&#10;Made some tests for eswaran_tarjan&#10;Implicitly added condensation">
+      <created>1567360081445</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1567360081445</updated>
+    </task>
+    <task id="LOCAL-00008" summary="EswaranTarjan edited exception raise">
+      <created>1567365204960</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1567365204960</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestEswaranTarjan - 2019.09.01 at 18h 54m 47s.xml">
+    <history-entry file="TestEswaranTarjan - 2019.09.01 at 21h 09m 47s.xml">
       <configuration name="TestEswaranTarjan" configurationId="tests" />
     </history-entry>
-    <history-entry file="TestEswaranTarjan - 2019.09.01 at 18h 54m 56s.xml">
+    <history-entry file="TestEswaranTarjan - 2019.09.01 at 21h 10m 30s.xml">
       <configuration name="TestEswaranTarjan" configurationId="tests" />
     </history-entry>
-    <history-entry file="TestEswaranTarjan - 2019.09.01 at 18h 55m 15s.xml">
+    <history-entry file="TestEswaranTarjan - 2019.09.01 at 21h 11m 48s.xml">
       <configuration name="TestEswaranTarjan" configurationId="tests" />
     </history-entry>
-    <history-entry file="TestEswaranTarjan - 2019.09.01 at 18h 56m 54s.xml">
+    <history-entry file="TestEswaranTarjan - 2019.09.01 at 21h 12m 53s.xml">
       <configuration name="TestEswaranTarjan" configurationId="tests" />
     </history-entry>
-    <history-entry file="TestEswaranTarjan - 2019.09.01 at 18h 57m 25s.xml">
+    <history-entry file="TestEswaranTarjan - 2019.09.01 at 21h 12m 58s.xml">
       <configuration name="TestEswaranTarjan" configurationId="tests" />
     </history-entry>
-    <history-entry file="TestEswaranTarjan - 2019.09.01 at 18h 57m 32s.xml">
+    <history-entry file="TestEswaranTarjan - 2019.09.01 at 21h 14m 21s.xml">
       <configuration name="TestEswaranTarjan" configurationId="tests" />
     </history-entry>
-    <history-entry file="TestEswaranTarjan - 2019.09.01 at 18h 57m 40s.xml">
+    <history-entry file="TestEswaranTarjan - 2019.09.01 at 21h 37m 30s.xml">
       <configuration name="TestEswaranTarjan" configurationId="tests" />
     </history-entry>
-    <history-entry file="TestEswaranTarjan - 2019.09.01 at 18h 57m 57s.xml">
+    <history-entry file="TestEswaranTarjan - 2019.09.01 at 21h 37m 57s.xml">
       <configuration name="TestEswaranTarjan" configurationId="tests" />
     </history-entry>
-    <history-entry file="TestEswaranTarjan - 2019.09.01 at 19h 00m 03s.xml">
+    <history-entry file="TestEswaranTarjan - 2019.09.01 at 21h 39m 03s.xml">
       <configuration name="TestEswaranTarjan" configurationId="tests" />
     </history-entry>
-    <history-entry file="TestEswaranTarjan - 2019.09.01 at 19h 41m 57s.xml">
+    <history-entry file="TestEswaranTarjan - 2019.09.01 at 23h 17m 34s.xml">
       <configuration name="TestEswaranTarjan" configurationId="tests" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="169567000" />
+    <option name="totallyTimeSpent" value="176952000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -456,6 +470,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-4" y="0" width="1374" height="736" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49712643" visible="true" weight="0.3439394" />
       <window_info id="Structure" order="1" sideWeight="0.50287354" side_tool="true" weight="0.28863636" />
@@ -497,7 +512,8 @@
     <MESSAGE value="Rewritten augment graph method, which needs to be still improved, though, written as neatly and clearly as possible" />
     <MESSAGE value="Implemented eswaran_tarjan according to the new paper, still have to test it" />
     <MESSAGE value="EswaranTarjan:&#10;Edited search procedure from tail recursion to for cycle&#10;Made some tests for eswaran_tarjan&#10;Implicitly added condensation" />
-    <option name="LAST_COMMIT_MESSAGE" value="EswaranTarjan:&#10;Edited search procedure from tail recursion to for cycle&#10;Made some tests for eswaran_tarjan&#10;Implicitly added condensation" />
+    <MESSAGE value="EswaranTarjan edited exception raise" />
+    <option name="LAST_COMMIT_MESSAGE" value="EswaranTarjan edited exception raise" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -525,8 +541,9 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$TestAugmentation.coverage" NAME="TestAugmentation Coverage Results" MODIFIED="1566049013728" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Tests" />
     <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$Test.coverage" NAME="Test Coverage Results" MODIFIED="1567354337117" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Algo" />
-    <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$TestEswaranTarjan.coverage" NAME="TestEswaranTarjan Coverage Results" MODIFIED="1567359716684" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$TestEswaranTarjan.coverage" NAME="TestEswaranTarjan Coverage Results" MODIFIED="1567372653415" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$BipartiteMatchingAugmentation.coverage" NAME="BipartiteMatchingAugmentation Coverage Results" MODIFIED="1563053207568" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Algo" />
+    <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$Nosetests_in_test_relabel_py.coverage" NAME="Nosetests in test_relabel.py Coverage Results" MODIFIED="1567364708483" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$TestSourceCover.coverage" NAME="TestSourceCover Coverage Results" MODIFIED="1567345924284" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Tests" />
   </component>
   <component name="debuggerHistoryManager">
@@ -550,6 +567,16 @@
       </expression>
     </expressions>
     <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>G.is_graph()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>G.is_multigraph()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>len(condensation_i[0].nodes[2]['members'])</expression-string>
         <language-id>Python</language-id>
@@ -585,26 +612,9 @@
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
-      <expression>
-        <expression-string>nx.algorithms.dfs_tree(R, 1886)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>1886 in sources</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Graph/__init__.py" />
-    <entry file="file://$PROJECT_DIR$/Graph/Graph.py" />
-    <entry file="file://$PROJECT_DIR$/Algo/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Graph/Edge.py" />
-    <entry file="file://$PROJECT_DIR$/Graph/Vertex.py" />
     <entry file="file://$PROJECT_DIR$/venv/lib/python3.5/site-packages/networkx/algorithms/components/strongly_connected.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
@@ -776,29 +786,6 @@
         <state relative-caret-position="-1305" />
       </provider>
     </entry>
-    <entry file="file:///usr/local/lib/python3.6/dist-packages/networkx/classes/multidigraph.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1231">
-          <caret line="850" column="8" selection-start-line="850" selection-start-column="8" selection-end-line="850" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/lib/python3.6/dist-packages/networkx/algorithms/components/strongly_connected.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2480">
-          <caret line="184" column="8" selection-start-line="184" selection-start-column="8" selection-end-line="184" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/lib/python3.6/dist-packages/nose/tools/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#213#248#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Algo/Exceptions.py" />
     <entry file="file:///usr/local/lib/python3.6/dist-packages/networkx/classes/graph.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -831,27 +818,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/local/lib/python3.6/dist-packages/nose/case.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="197" selection-start-line="197" selection-end-line="197" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python3.6/unittest/case.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8910">
-          <caret line="607" selection-start-line="607" selection-end-line="607" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/lib/python3.6/dist-packages/networkx/utils/decorators.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4455">
-          <caret line="302" selection-start-line="302" selection-end-line="302" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Algo/SourceCover.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
@@ -879,30 +845,142 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/lib/python3.6/unittest/case.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="97">
+          <caret line="652" selection-start-line="652" selection-end-line="652" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.6/dist-packages/nose/suite.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="97">
+          <caret line="177" selection-start-line="177" selection-end-line="177" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python3.6/unittest/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="106">
+          <caret line="94" selection-start-line="94" selection-end-line="94" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.6/dist-packages/nose/core.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="97">
+          <caret line="120" selection-start-line="120" selection-end-line="120" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pycharm/_jb_nosetest_runner.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="16" selection-start-line="16" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.6/dist-packages/nose/case.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="106">
+          <caret line="197" selection-start-line="197" selection-end-line="197" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.6/dist-packages/networkx/utils/decorators.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="104">
+          <caret line="69" column="41" lean-forward="true" selection-start-line="69" selection-start-column="41" selection-end-line="69" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.6/dist-packages/networkx/tests/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-285">
+          <folding>
+            <element signature="e#22#32#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.6/dist-packages/networkx/classes/multidigraph.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="11430">
+          <caret line="771" column="8" selection-start-line="771" selection-start-column="8" selection-end-line="771" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.6/dist-packages/nose/tools/nontrivial.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file:///usr/local/lib/python3.6/dist-packages/nose/tools/trivial.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-14" />
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.6/dist-packages/nose/inspector.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file:///usr/local/lib/python3.6/dist-packages/nose/tools/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#213#248#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.6/dist-packages/networkx/tests/test_relabel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="7" lean-forward="true" selection-start-line="9" selection-start-column="7" selection-end-line="9" selection-end-column="7" />
+          <folding>
+            <element signature="e#22#46#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.6/dist-packages/networkx/algorithms/components/strongly_connected.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="361" column="4" selection-start-line="361" selection-start-column="4" selection-end-line="361" selection-end-column="4" />
+          <folding>
+            <element signature="e#390#418#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.6/dist-packages/networkx/algorithms/bipartite/matching.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2535">
+          <caret line="173" column="4" selection-start-line="173" selection-start-column="4" selection-end-line="173" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Tests/TestEswaranTarjan.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="154">
-          <caret line="33" column="26" lean-forward="true" selection-start-line="33" selection-start-column="26" selection-end-line="33" selection-end-column="26" />
+        <state relative-caret-position="60">
+          <caret line="7" column="8" lean-forward="true" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
           <folding>
             <element signature="e#0#68#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Algo/BipartiteMatchingAugmentation.py">
+    <entry file="file://$PROJECT_DIR$/Algo/EswaranTarjan.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1023">
-          <caret line="48" lean-forward="true" selection-start-line="48" selection-end-line="48" />
+        <state relative-caret-position="-238">
+          <caret line="94" column="18" selection-start-line="94" selection-start-column="18" selection-end-line="94" selection-end-column="18" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Algo/EswaranTarjan.py">
+    <entry file="file://$PROJECT_DIR$/Algo/BipartiteMatchingAugmentation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="51" column="29" selection-start-line="51" selection-start-column="29" selection-end-line="51" selection-end-column="29" />
+        <state relative-caret-position="176">
+          <caret line="64" column="44" lean-forward="true" selection-start-line="64" selection-start-column="44" selection-end-line="64" selection-end-column="44" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
           </folding>

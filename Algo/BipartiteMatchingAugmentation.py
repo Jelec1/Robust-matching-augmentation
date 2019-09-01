@@ -67,7 +67,7 @@ def augmentGraph(G: nx.Graph, A: Set):
                         if v in X:
                             X.remove(v)
 
-        A_i[i] = nx.algorithms.components.condensation(condensation_i[i])
+        A_i[i] = nx.algorithms.components.condensation(Di[i])
 
         for nodeIn in A_i[0].in_degree():  # iterates over doubles (vert, in_degree)
             node = nodeIn[0]

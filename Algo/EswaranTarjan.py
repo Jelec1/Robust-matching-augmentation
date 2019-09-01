@@ -5,9 +5,37 @@ from networkx.utils.decorators import not_implemented_for
 @not_implemented_for('undirected')
 @not_implemented_for('multigraph')
 def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False):
+    """Returns a set of edges A such that G(V, E + A) is strongly connected.
 
-    #if not G.is_directed():
-    #    raise nx.NetworkXNotImplemented("G is not a directed graph")
+    Parameters
+    ----------
+    G : NetworkX DiGraph
+       A directed graph.
+
+    is_condensation=False : bool
+    True if G has no non-trivial strongly connected
+    component, which will be checked. If G has a strongly connected component,
+    exception HasACycle will be raised. If the parameter is False,
+    strongly connected components will be computed.
+
+    Returns
+    -------
+    A : Set
+       Set of directed edges (u, v) such that G(V, E + A) is strongly connected
+
+    Raises
+    ------
+    NetworkX.NotImplemented:
+        If G is undirected or a multigraph.
+    NetworkX.HasACycle:
+        If G has a cycle and is_condensation=True
+
+    Notes
+    -----
+    Modified version of Eswaran and Tarjan's algorithm https://epubs.siam.org/doi/abs/10.1137/0205044
+    and it's correction due to S. Raghavan https://link.springer.com/chapter/10.1007/0-387-23529-9_2
+
+    """
 
     G_condensation: nx.DiGraph
 
@@ -54,6 +82,7 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False):
 
     def search(x):
         stack = [x]
+        unmarked.discard(x)
 
         while len(stack) > 0:
             x = stack.pop()
@@ -63,9 +92,10 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False):
                     w = x
                     break
 
-                unmarked.remove(x)
+                # unmarked.remove(x)
                 for y in G_condensation.neighbors(x):
                     if y in unmarked:
+                        unmarked.discard(y)
                         stack.append(y)
 
     # initialize all nodes as unmarked

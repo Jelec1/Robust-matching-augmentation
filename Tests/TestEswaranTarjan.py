@@ -28,6 +28,9 @@ class TestEswaranTarjan:
         assert_raises(nx.HasACycle, eswaran_tarjan, G, True)
         G.add_node(0)
         assert_raises(nx.HasACycle, eswaran_tarjan, G, True)
+        G.clear()
+        G.add_edges_from({(0, 1), (1, 0)})
+        assert_raises(nx.HasACycle, eswaran_tarjan, G, True)
 
     def test_empty(self):
         print("Testing empty graph.")
