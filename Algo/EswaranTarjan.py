@@ -3,19 +3,25 @@ from typing import List, Set
 
 
 def eswaran_tarjan(G: nx.DiGraph):
-    if len(G.nodes) <= 1:
+    # TODO Think about adding it's own condensation as a parameter
+
+    if not G.is_directed():
+        raise nx.NetworkXNotImplemented("G is not a directed graph")
+
+    G_condensation = nx.algorithms.condensation(G)
+
+    if len(G_condensation.nodes) <= 1:
         return set()
 
-    marked: Set = set()
     unmarked: Set = set()
 
     isolated: List = []
     sources: Set = set()
     sinks: Set = set()
 
-    for vertex in G.nodes:
-        inDegree: int = G.in_degree(vertex)
-        outDegree: int = G.out_degree(vertex)
+    for vertex in G_condensation.nodes:
+        inDegree: int = G_condensation.in_degree(vertex)
+        outDegree: int = G_condensation.out_degree(vertex)
 
         if inDegree == 0 and outDegree == 0:
             isolated.append(vertex)
@@ -29,44 +35,36 @@ def eswaran_tarjan(G: nx.DiGraph):
     q: int = len(isolated)
 
     reverted = False
-    graph: nx.DiGraph
 
     if s > t:
         s, t = t, s
         sources, sinks = sinks, sources
-        graph = G.reverse(copy=False)
-    else:
-        graph = G
-
-    w = None
-    sink_not_found = None
+        G_condensation = G_condensation.reverse(copy=False)
 
     v_list: List = []
     w_list: List = []
 
     def search(x):
-        if x in unmarked:  # "x is unmarked"
-            if x in sinks:  # "x is a sink"
-                global w
-                w = x
-                global sink_not_found
-                sink_not_found = False
+        stack = [x]
 
-            marked.add(x)  # mark x
-            unmarked.remove(x)
+        while len(stack) > 0:
+            x = stack.pop()
+            if x in unmarked:
+                if x in sinks:
+                    global w
+                    w = x
+                    break
 
-            for y in graph.neighbors(x):
-                if sink_not_found:
-                    search(y)
+                unmarked.remove(x)
+                for y in G_condensation.neighbors(x):
+                    if y in unmarked:
+                        stack.append(y)
 
-    "initialize all nodes as unmarked"
-    unmarked = set(graph.nodes)
-
-    unmarked_sources: Set = unmarked.intersection(sources)
+    # initialize all nodes as unmarked
+    unmarked_sources: Set = (set(G_condensation.nodes)).intersection(sources)
     while len(unmarked_sources) > 0:  # some source is unmarked
         v = unmarked_sources.pop()  # "choose some unmarked source v"
         w = None
-        sink_not_found = True
         search(v)
         if w is not None:
             v_list.append(v)
@@ -99,6 +97,6 @@ def eswaran_tarjan(G: nx.DiGraph):
         A.add((isolated[q - 1], v_list[0]))
 
     if reverted:
-        return {(e[1], e[0]) for e in A}
+        return {(G_condensation.nodes[e[1]]['members'].pop(), G_condensation.nodes[e[0]]['members'].pop()) for e in A}
     else:
-        return A
+        return {(G_condensation.nodes[e[0]]['members'].pop(), G_condensation.nodes[e[1]]['members'].pop()) for e in A}
