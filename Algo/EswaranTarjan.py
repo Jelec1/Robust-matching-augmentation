@@ -2,9 +2,10 @@ import networkx as nx
 from typing import List, Set
 from networkx.utils.decorators import not_implemented_for
 
+
 @not_implemented_for('undirected')
 @not_implemented_for('multigraph')
-def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False):
+def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
     """Returns a set of edges A such that G(V, E + A) is strongly connected.
 
     Parameters
@@ -12,11 +13,11 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False):
     G : NetworkX DiGraph
        A directed graph.
 
-    is_condensation=False : bool
-    True if G has no non-trivial strongly connected
-    component, which will be checked. If G has a strongly connected component,
-    exception HasACycle will be raised. If the parameter is False,
-    strongly connected components will be computed.
+    is_condensation : bool
+        Generic value False, True if G has no non-trivial strongly connected
+        component, which will be checked. If G has a strongly connected component,
+        exception HasACycle will be raised. If the parameter is False,
+        strongly connected components will be computed.
 
     Returns
     -------
@@ -73,6 +74,7 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False):
     reverted = False
 
     if s > t:
+        reverted = True
         s, t = t, s
         sources, sinks = sinks, sources
         G_condensation = G_condensation.reverse(copy=False)
@@ -86,32 +88,35 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False):
 
         while len(stack) > 0:
             x = stack.pop()
-            if x in unmarked:
-                if x in sinks:
-                    global w
-                    w = x
-                    break
+            # if x in unmarked:
+            if x in sinks:
+                return x
 
-                # unmarked.remove(x)
-                for y in G_condensation.neighbors(x):
-                    if y in unmarked:
-                        unmarked.discard(y)
-                        stack.append(y)
+            # unmarked.remove(x)
+            for y in G_condensation.neighbors(x):
+                if y in unmarked:
+                    unmarked.discard(y)
+                    stack.append(y)
 
+        return None
+
+    unmarked = set(G_condensation.nodes)
     # initialize all nodes as unmarked
     unmarked_sources: Set = (set(G_condensation.nodes)).intersection(sources)
     while len(unmarked_sources) > 0:  # some source is unmarked
         v = unmarked_sources.pop()  # "choose some unmarked source v"
-        w = None
-        search(v)
-        if w is not None:
-            v_list.append(v)
-            w_list.append(w)
+        w = search(v)
 
-    p = len(v_list)
+        v_list.append(v)
+        w_list.append(w)
+
+    p: int = len(v_list)
 
     v_list.extend(sources.difference(set(v_list)))
     w_list.extend(sinks.difference(set(w_list)))
+
+    v_list = list(map(lambda x: G_condensation.nodes[x]['members'].pop(), v_list))
+    w_list = list(map(lambda x: G_condensation.nodes[x]['members'].pop(), w_list))
 
     A: Set = set()
 
@@ -127,14 +132,19 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False):
         else:  # q = 0, s < t
             A.add((w_list[p - 1], w_list[s]))
             A.update({(w_list[i], w_list[i + 1]) for i in range(s, t - 1)})
-    else:  # q > 0, s <= t
-        A.add((w_list[p - 1], w_list[s + 1]))
-        A.update({(w_list[i], w_list[i + 1]) for i in range(s, t - 1)})
-        A.add((w_list[t - 1], isolated[0]))
-        A.update({(isolated[i], isolated[i + 1]) for i in range(0, q - 1)})
-        A.add((isolated[q - 1], v_list[0]))
+            A.add((w_list[t - 1], v_list[0]))
+    else:  # q > 0
+        if p > 0:
+            A.add((w_list[p - 1], w_list[s + 1]))
+            A.update({(w_list[i], w_list[i + 1]) for i in range(s, t - 1)})
+            A.add((w_list[t - 1], isolated[0]))
+            A.update({(isolated[i], isolated[i + 1]) for i in range(0, q - 1)})
+            A.add((isolated[q - 1], v_list[0]))
+        else:
+            A.update({(isolated[i], isolated[i + 1]) for i in range(0, q - 1)})
+            A.add((isolated[q-1], isolated[0]))
 
     if reverted:
-        return {(G_condensation.nodes[e[1]]['members'].pop(), G_condensation.nodes[e[0]]['members'].pop()) for e in A}
-    else:
-        return {(G_condensation.nodes[e[0]]['members'].pop(), G_condensation.nodes[e[1]]['members'].pop()) for e in A}
+        A = set(map(lambda x: (x[1], x[0]), A))
+
+    return A

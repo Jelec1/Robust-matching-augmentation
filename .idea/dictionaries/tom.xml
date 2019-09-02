@@ -4,6 +4,7 @@
       <w>adjoint</w>
       <w>multigraph</w>
       <w>networkx</w>
+      <w>outcoming</w>
       <w>tarjan</w>
     </words>
   </dictionary>
