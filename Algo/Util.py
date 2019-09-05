@@ -24,7 +24,7 @@ def getSourcesSinksIsolated(G: nx.DiGraph):
     an isolated vertex has neither incoming nor outcoming arc.
 
     """
-    isolated: List = []
+    isolated: Set = set()
     sources: Set = set()
     sinks: Set = set()
 
@@ -33,7 +33,7 @@ def getSourcesSinksIsolated(G: nx.DiGraph):
         outDegree: int = G.out_degree(vertex)
 
         if inDegree == 0 and outDegree == 0:
-            isolated.append(vertex)
+            isolated.add(vertex)
         elif inDegree == 0:
             sources.add(vertex)
         elif outDegree == 0:

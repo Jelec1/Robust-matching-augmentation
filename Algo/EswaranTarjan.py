@@ -1,6 +1,7 @@
 import networkx as nx
 from typing import List, Set
 from networkx.utils.decorators import not_implemented_for
+from Algo.Util import getSourcesSinksIsolated
 
 
 @not_implemented_for('undirected')
@@ -52,24 +53,15 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
 
     unmarked: Set = set()
 
-    isolated: List = []
-    sources: Set = set()
-    sinks: Set = set()
+    sourcesSinksIsolated = getSourcesSinksIsolated(G_condensation)
 
-    for vertex in G_condensation.nodes:
-        inDegree: int = G_condensation.in_degree(vertex)
-        outDegree: int = G_condensation.out_degree(vertex)
+    sources: Set = sourcesSinksIsolated[0]
+    sinks: Set = sourcesSinksIsolated[1]
+    isolated: Set = sourcesSinksIsolated[2]
 
-        if inDegree == 0 and outDegree == 0:
-            isolated.append(vertex)
-        elif inDegree == 0:
-            sources.add(vertex)
-        elif outDegree == 0:
-            sinks.add(vertex)
-
-    s: int = len(sources)
-    t: int = len(sinks)
-    q: int = len(isolated)
+    s: int = len(sources)  # Number of sinks
+    t: int = len(sinks)  # Number ou sources
+    q: int = len(isolated)  # Number of isolated vertices
 
     reverted = False
 
@@ -88,6 +80,7 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
 
         while len(stack) > 0:
             x = stack.pop()
+            unmarked.discard(x)
             # if x in unmarked:
             if x in sinks:
                 return x
@@ -95,7 +88,7 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
             # unmarked.remove(x)
             for y in G_condensation.neighbors(x):
                 if y in unmarked:
-                    unmarked.discard(y)
+                    # unmarked.discard(y)
                     stack.append(y)
 
         return None
@@ -106,9 +99,9 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
     while len(unmarked_sources) > 0:  # some source is unmarked
         v = unmarked_sources.pop()  # "choose some unmarked source v"
         w = search(v)
-
-        v_list.append(v)
-        w_list.append(w)
+        if w is not None:
+            v_list.append(v)
+            w_list.append(w)
 
     p: int = len(v_list)
 
@@ -117,34 +110,40 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
 
     v_list = list(map(lambda x: G_condensation.nodes[x]['members'].pop(), v_list))
     w_list = list(map(lambda x: G_condensation.nodes[x]['members'].pop(), w_list))
+    x_list = list(map(lambda x: G_condensation.nodes[x]['members'].pop(), isolated))
 
     A: Set = set()
 
-    for i in range(0, p - 1):
-        A.add((w_list[i], v_list[i + 1]))
+    for i in range(0, p - 1):  # Covers (w_0, v_1) ... (w_p-2, v_p-1)
+        A.add((w_list[i], v_list[i+1]))
 
-    for i in range(p, s):
+    for i in range(p, s):  # Covers (w_p, v_p) ... (w_s-1, v_s-1)
         A.add((w_list[i], v_list[i]))
 
-    if q == 0:
+    for i in range(s, t - 1):  # Covers (w_s, w_s+1) ... (w_t-2, w_t-1)
+        A.add((w_list[i], w_list[i+1]))
+
+    for i in range(0, q - 1):  # Covers (x_0, x_1) ... (x_q-2, x_q-1)
+        A.add((x_list[i], x_list[i+1]))
+
+    if p == 0:  # This also ensures that s == t == 0 and q > 1
+        A.add((x_list[q-1], x_list[0]))  # Covers (x_q-1, x_0) closing the cycle
+    else:  # p > 0
         if s == t:
-            A.add((w_list[p - 1], v_list[0]))
-        else:  # q = 0, s < t
-            A.add((w_list[p - 1], w_list[s]))
-            A.update({(w_list[i], w_list[i + 1]) for i in range(s, t - 1)})
-            A.add((w_list[t - 1], v_list[0]))
-    else:  # q > 0
-        if p > 0:
-            A.add((w_list[p - 1], w_list[s + 1]))
-            A.update({(w_list[i], w_list[i + 1]) for i in range(s, t - 1)})
-            A.add((w_list[t - 1], isolated[0]))
-            A.update({(isolated[i], isolated[i + 1]) for i in range(0, q - 1)})
-            A.add((isolated[q - 1], v_list[0]))
-        else:
-            A.update({(isolated[i], isolated[i + 1]) for i in range(0, q - 1)})
-            A.add((isolated[q-1], isolated[0]))
+            if q == 0:
+                A.add((w_list[p - 1], v_list[0]))  # Covers (w_p-1, v_0) closing the cycle
+            else:  # q > 0
+                A.add((w_list[p - 1], x_list[0]))  # Covers (w_p-1, x_0)
+                A.add((x_list[q - 1], v_list[0]))  # Covers (x_q-1, v_0) closing the cycle
+        else:  # t > s
+            A.add((w_list[p - 1], w_list[s]))  # Covers (w_p-1, w_s)
+            if q == 0:
+                A.add((w_list[t - 1], v_list[0]))  # Covers (w_t-1, v_0)
+            else:  # q > 0
+                A.add((w_list[t - 1], x_list[0]))  # Covers (w_t-1, x_0)
+                A.add((x_list[q - 1], v_list[0]))  # Covers (x_q-1, v_0) closing the cycle
 
     if reverted:
-        A = set(map(lambda x: (x[1], x[0]), A))
+        A = set(map(lambda e: (e[1], e[0]), A))
 
     return A
