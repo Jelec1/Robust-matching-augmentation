@@ -1,7 +1,7 @@
 import networkx as nx
 from typing import List, Set
 from networkx.utils.decorators import not_implemented_for
-from Algo.Util import getSourcesSinksIsolated
+from Algo.Util import get_sources_sinks_isolated
 
 
 @not_implemented_for('undirected')
@@ -23,7 +23,8 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
     Returns
     -------
     A : Set
-       Set of directed edges (u, v) such that G(V, E + A) is strongly connected
+       Set of directed edges (u, v) such that G(V, E + A) is strongly connected,
+       returns an empty set for an empty graph.
 
     Raises
     ------
@@ -45,13 +46,13 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
         G_condensation = nx.algorithms.condensation(G)
     else:
         if not nx.algorithms.dag.is_directed_acyclic_graph(G):
-            raise nx.HasACycle("G has a cycle, acyclic graph expected")
+            raise nx.HasACycle("G is cyclic, acyclic graph expected")
         G_condensation = G
 
     if len(G_condensation.nodes) <= 1:  # The trivial case can be handled here
         return set()
 
-    sourcesSinksIsolated = getSourcesSinksIsolated(G_condensation)
+    sourcesSinksIsolated = get_sources_sinks_isolated(G_condensation)
 
     sources: Set = sourcesSinksIsolated['sources']
     sinks: Set = sourcesSinksIsolated['sinks']

@@ -4,7 +4,7 @@ from networkx.utils.decorators import not_implemented_for
 
 
 @not_implemented_for('undirected')
-def getSourcesSinksIsolated(G: nx.DiGraph) -> Dict:
+def get_sources_sinks_isolated(G: nx.DiGraph) -> Dict:
     """
 
     Parameters
