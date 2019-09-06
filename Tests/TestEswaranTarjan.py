@@ -4,7 +4,7 @@ from Algo.EswaranTarjan import eswaran_tarjan
 from Algo.Util import get_sources_sinks_isolated
 
 
-def edgesForAugment(G) -> int:
+def edges_for_augmentation(G) -> int:
     """ Bounds the number of arcs needed to make G strongly connected
 
     Parameters
@@ -24,10 +24,10 @@ def edgesForAugment(G) -> int:
     """
     G = nx.algorithms.condensation(G)
 
-    sourcesSinksIsolated = get_sources_sinks_isolated(G)
-    s: int = len(sourcesSinksIsolated['sources'])
-    t: int = len(sourcesSinksIsolated['sinks'])
-    q: int = len(sourcesSinksIsolated['isolated'])
+    sources_sinks_isolated = get_sources_sinks_isolated(G)
+    s: int = len(sources_sinks_isolated['sources'])
+    t: int = len(sources_sinks_isolated['sinks'])
+    q: int = len(sources_sinks_isolated['isolated'])
 
     if s + t + q > 1:
         return max(s, t) + q
@@ -60,7 +60,7 @@ def is_correctly_augmented(G: nx.DiGraph()) -> bool:
 
     G = G.copy()
     A = eswaran_tarjan(G)
-    n = edgesForAugment(G)
+    n = edges_for_augmentation(G)
     G.add_edges_from(A)
     return nx.algorithms.is_strongly_connected(G) and (len(A) == n)
 
@@ -132,7 +132,7 @@ class TestEswaranTarjan:
         assert_true(is_correctly_augmented(G))
 
     def test_A_critical_q_null_p_lower_s_lower_t(self):
-        # Tests correct behaviour if q = 0 and p < s = t.
+        # Tests correct behaviour if q = 0 and p < s < t.
         # We extend our crossroad graph by extending the central cross
         # one vertex to each side. As previously, we test
         # if s + 1 = t and if the difference is bigger.
@@ -179,10 +179,49 @@ class TestEswaranTarjan:
         assert_true(is_correctly_augmented(G))
 
     def test_A_critical_q_notnull_p_lower_s_eq_t(self):
-        pass
+        # Tests correct behaviour if q != 0 and p < s = t
+        # To test this, we test in on a "crossroad" graph G
+        # E(G) = {(a, m), (m, b), (c, m), (d, m)}
+        # We test both if p + 1 = s = t and if the difference if bigger
+        # and also if the underlying undirected graph is not connected
+        G = nx.DiGraph()
+        G.add_nodes_from({0})
+
+        G.add_edges_from({('a', 'm'), ('m', 'b'), ('c', 'm'), ('m', 'd')})
+        assert_true(is_correctly_augmented(G))
+
+        H = nx.DiGraph()
+        H.add_edges_from({('a', 'm'), ('m', 'b'), ('c', 'm'), ('m', 'd'),
+                          ('e', 'm'), ('m', 'f')})
+        assert_true(is_correctly_augmented(H))
+
+        G = nx.disjoint_union(G, H)
+        assert_true(is_correctly_augmented(G))
+
+        H.clear()
+        H.add_nodes_from({0})
+        G = nx.disjoint_union(G, H)
+        assert_true(is_correctly_augmented(G))
 
     def test_A_critical_q_notnull_p_lower_s_lower_t(self):
-        pass
+        # Tests correct behaviour if q = 0 and p < s < t.
+        # We extend our crossroad graph by extending the central cross
+        # one vertex to each side. As previously, we test
+        # if s + 1 = t and if the difference is bigger.
+        # Moreover, we test adding 1 resp. 2 isolated vertices.
+        G = nx.DiGraph()
+        G.add_edges_from({('a', 'p'), ('p', 'm'), ('m', 'n'),
+                          ('n', 'b'), ('n', 'c'), ('d', 'q'),
+                          ('q', 'm'), ('m', 'o'), ('o', 'e')})
+        assert_true(is_correctly_augmented(G))
+        G.add_edges_from({('o', 'f')})
+        assert_true(is_correctly_augmented(G))
+
+        G.add_node(0)
+        assert_true(is_correctly_augmented(G))
+
+        G.add_node(1)
+        assert_true(is_correctly_augmented(G))
 
     """
     --------------------
@@ -223,7 +262,7 @@ class TestEswaranTarjan:
         # Tests behaviour on (small) random graphs of different density.
         # Used to catch graph instances not caught in previous tests,
         # for which special tests should be created afterwards.
-        for i in range(1, 10):
+        for i in range(1, 100):
             p = 0.199
             while p < 1:
                 G = nx.fast_gnp_random_graph(i, p, directed=True)
