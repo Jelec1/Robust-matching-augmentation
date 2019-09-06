@@ -100,44 +100,6 @@ class TestEswaranTarjan:
         # Testing digraph with one vertex, empty set expected.
         assert_set_equal(eswaran_tarjan(nx.complete_graph(1, nx.DiGraph())), set(), "Expected empty set")
 
-    def test_directed_path_joins_ends(self):
-        # Testing if called on directed path,
-        # expected
-        for i in range(2, 11):
-            assert_set_equal(eswaran_tarjan(nx.path_graph(i, nx.DiGraph())), {(i - 1, 0)})
-
-    def test_tree(self):
-        # Testing correct behaviour on trees, expecting to connect all leaves and one
-        # leaf with root.
-        for i in range(0, 5):
-            G: nx.DiGraph = nx.generators.classic.balanced_tree(2, i, create_using=nx.DiGraph)
-            assert_true(is_correctly_augmented(G))
-            G = G.reverse()
-            assert_true(is_correctly_augmented(G))
-
-    def test_isolated(self):
-        # Tests correct behaviour on graph consisting of isolated trivial vertices
-        n = 0
-        for i in range(5):
-            G: nx.DiGraph = nx.DiGraph()
-            G.add_nodes_from({j for j in range(2**i + n)})
-            n = n + 1
-            assert_true(is_correctly_augmented(G))
-
-    def test_several_disjoint_strongly_connected_components(self):
-        # Tests a correct behaviour of connecting isolated vertices when
-        # there are more mutually disjoint strongly connected components,
-        # this tests correct choice of representative and connecting only
-        # isolated vertices.
-        n = 0
-        for i in range(0, 5):
-            G: nx.DiGraph = nx.DiGraph()
-            for j in range(2 ** i + n):
-                C = nx.cycle_graph(i+2, create_using=nx.DiGraph())
-                G = nx.disjoint_union(G, C)
-            n = n + 1
-            assert_true(is_correctly_augmented(G))
-
     """
     --------------------
     The following tests test the correct behaviour on marginal conditions
@@ -158,39 +120,110 @@ class TestEswaranTarjan:
         # We test both if p + 1 = s = t and if the difference if bigger
         # and also if the underlying undirected graph is not connected
         G = nx.DiGraph()
-        G.add_edges_from({('a', 'm'), ('m', 'b'), ('c', 'm'), ('d', 'm')})
+        G.add_edges_from({('a', 'm'), ('m', 'b'), ('c', 'm'), ('m', 'd')})
         assert_true(is_correctly_augmented(G))
 
-        for i in range(0, 5):
-            G.add_edge(2 * i, 2 * i + 1)
+        H = nx.DiGraph()
+        H.add_edges_from({('a', 'm'), ('m', 'b'), ('c', 'm'), ('m', 'd'),
+                          ('e', 'm'), ('m', 'f')})
+        assert_true(is_correctly_augmented(H))
+
+        G = nx.disjoint_union(G, H)
         assert_true(is_correctly_augmented(G))
 
     def test_A_critical_q_null_p_lower_s_lower_t(self):
-        pass
+        # Tests correct behaviour if q = 0 and p < s = t.
+        # We extend our crossroad graph by extending the central cross
+        # one vertex to each side. As previously, we test
+        # if s + 1 = t and if the difference is bigger.
+        # We also test correct behaviour on reversed graph.
+        G = nx.DiGraph()
+        G.add_edges_from({('a', 'p'), ('p', 'm'), ('m', 'n'),
+                          ('n', 'b'), ('n', 'c'), ('d', 'q'),
+                          ('q', 'm'), ('m', 'o'), ('o', 'e')})
+        assert_true(is_correctly_augmented(G))
+        G.add_edges_from({('o', 'f')})
+        assert_true(is_correctly_augmented(G))
+        G = G.reverse()
+        assert_true(is_correctly_augmented(G))
 
     def test_A_critical_q_notnull_stp_null(self):
-        pass
+        # Tests correct behaviour if q != 0 and 0 = p = s = t.
+        # This will be done using generating number of graphs where
+        # no two vertices are connected. G will have both, even and odd number
+        # of vertices.
+        n = 0
+        for i in range(5):
+            G: nx.DiGraph = nx.DiGraph()
+            G.add_nodes_from({j for j in range(2 ** i + n)})
+            n = n + 1
+            assert_true(is_correctly_augmented(G))
 
-    def test_A_critical_q_notnull_p_eq_st(self):
-        pass
+    def test_A_critical_q_notnull_p_eq_st_not_null(self):
+        # Tests correct behaviour if q != 0, 0 < p = s = t
+        # To test this, we will test cases when p, s, t = {1, 2}
+        # and q = {0, 1}
+        G = nx.DiGraph()
+        G.add_node(0)
+        H = nx.path_graph(2, nx.DiGraph())
+        G = nx.disjoint_union(G, H)
+        assert_true(is_correctly_augmented(G))
+
+        H = nx.path_graph(3, nx.DiGraph())
+        G = nx.disjoint_union(G, H)
+        assert_true(is_correctly_augmented(G))
+
+        H = nx.DiGraph()
+        H.add_node(0)
+        G = nx.disjoint_union(G, H)
+        assert_true(is_correctly_augmented(G))
 
     def test_A_critical_q_notnull_p_lower_s_eq_t(self):
         pass
 
     def test_A_critical_q_notnull_p_lower_s_lower_t(self):
         pass
+
     """
     --------------------
     End of testing marginal conditions regarding s, t, p, q
     --------------------
     """
 
+    def test_directed_path_joins_ends(self):
+        # Testing if called on directed path,
+        # expected
+        for i in range(2, 11):
+            assert_set_equal(eswaran_tarjan(nx.path_graph(i, nx.DiGraph())), {(i - 1, 0)})
+
+    def test_tree(self):
+        # Testing correct behaviour on trees, expecting to connect all leaves and one
+        # leaf with root.
+        for i in range(0, 5):
+            G: nx.DiGraph = nx.generators.classic.balanced_tree(2, i, create_using=nx.DiGraph)
+            assert_true(is_correctly_augmented(G))
+            G = G.reverse()
+            assert_true(is_correctly_augmented(G))
+
+    def test_several_disjoint_strongly_connected_components(self):
+        # Tests a correct behaviour of connecting isolated vertices when
+        # there are more mutually disjoint strongly connected components,
+        # this tests correct choice of representative and connecting only
+        # isolated vertices.
+        n = 0
+        for i in range(0, 5):
+            G: nx.DiGraph = nx.DiGraph()
+            for j in range(2 ** i + n):
+                C = nx.cycle_graph(i+2, create_using=nx.DiGraph())
+                G = nx.disjoint_union(G, C)
+            n = n + 1
+            assert_true(is_correctly_augmented(G))
 
     def test_random_graphs(self):
         # Tests behaviour on (small) random graphs of different density.
         # Used to catch graph instances not caught in previous tests,
         # for which special tests should be created afterwards.
-        for i in range(1, 100):
+        for i in range(1, 10):
             p = 0.199
             while p < 1:
                 G = nx.fast_gnp_random_graph(i, p, directed=True)
