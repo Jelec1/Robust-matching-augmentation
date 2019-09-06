@@ -235,7 +235,7 @@ class TestEswaranTarjan:
         for i in range(2, 11):
             assert_set_equal(eswaran_tarjan(nx.path_graph(i, nx.DiGraph())), {(i - 1, 0)})
 
-    def test_tree(self):
+    def test_tree_and_reversed(self):
         # Testing correct behaviour on trees, expecting to connect all leaves and one
         # leaf with root.
         for i in range(0, 5):
