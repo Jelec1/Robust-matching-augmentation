@@ -2,21 +2,51 @@ from nose.tools import assert_set_equal, assert_raises, assert_false, assert_equ
 import networkx as nx
 from Algo.EswaranTarjan import eswaran_tarjan
 from Algo.Util import getSourcesSinksIsolated
-# from networkx.testing import assert_graphs_equal
+from typing import Set
 
 
-def edgesForAugment(G):
+def edgesForAugment(G) -> int:
     G = nx.algorithms.condensation(G)
 
     sourcesSinksIsolated = getSourcesSinksIsolated(G)
-    s = len(sourcesSinksIsolated[0])
-    t = len(sourcesSinksIsolated[1])
-    q = len(sourcesSinksIsolated[2])
+    s: int = len(sourcesSinksIsolated['sources'])
+    t: int = len(sourcesSinksIsolated['sinks'])
+    q: int = len(sourcesSinksIsolated['isolated'])
 
     if s + t + q > 1:
         return max(s, t) + q
-    else:
-        return None
+    else:  # obviously s > 0 iff t > 0, thus s == t == 0
+        if q <= 1:
+            return 0
+        else:
+            return q
+
+
+def is_correctly_augmented(G: nx.DiGraph(), A: Set) -> bool:
+    """Returns if A augments G and is minimal
+
+    Parameters
+    ----------
+    G : NetworkX DiGraph
+       A directed graph.
+
+    A : Set
+        Set of arcs that should augment G
+
+    Returns
+    -------
+    correct : bool
+       True if A augments A and is a minimal such set according to the lower bound of Eswaran and Tarjan
+    Notes
+    -----
+    For upper and lower bound see
+    Theorem 2 in Eswaran and Tarjan's algorithm https://epubs.siam.org/doi/abs/10.1137/0205044
+
+    """
+    G = G.copy()
+    n = edgesForAugment(G)
+    G.add_edges_from(A)
+    return nx.algorithms.is_strongly_connected(G) and (len(A) == n)
 
 
 class TestEswaranTarjan:
@@ -65,57 +95,31 @@ class TestEswaranTarjan:
     def test_tree(self):
         for i in range(0, 5):
             G: nx.DiGraph = nx.generators.classic.balanced_tree(2, i, create_using=nx.DiGraph)
-            minEdges = edgesForAugment(G)
             A = eswaran_tarjan(G)
-            G.add_edges_from(A)
-            cond = nx.algorithms.condensation(G)
-            assert_equal(len(cond.nodes), 1)
-            if minEdges is not None:
-                assert_equal(minEdges, len(A))
+            assert_true(is_correctly_augmented(G, A))
 
             G: nx.DiGraph = nx.generators.classic.balanced_tree(2, i, create_using=nx.DiGraph)
             G = G.reverse()
             A = eswaran_tarjan(G)
-            G.add_edges_from(A)
-            cond = nx.algorithms.condensation(G)
-            assert_equal(len(cond.nodes), 1)
-            if minEdges is not None:
-                assert_equal(minEdges, len(A))
+            assert_true(is_correctly_augmented(G, A))
 
     def test_isolated(self):
         n = 0
         for i in range(5):
             G: nx.DiGraph = nx.DiGraph()
             G.add_nodes_from({j for j in range(2**i + n)})
-            minEdges = edgesForAugment(G)
             n = n + 1
             A = eswaran_tarjan(G)
-            G.add_edges_from(A)
-            assert_true(nx.algorithms.is_strongly_connected(G))
-            if minEdges is not None:
-                assert_equal(minEdges, len(A))
+            assert_true(is_correctly_augmented(G, A))
 
-    def test_complex_graph(self):
-        n = 0
-        G: nx.DiGraph = nx.DiGraph()
-        for i in range(5):
-            H = nx.DiGraph()
-            H.add_nodes_from({j for j in range(2 ** i + n)})
-            G = nx.algorithms.operators.binary.disjoint_union(G, H)
-            n += 1
-
-
+    def test_several_disjoint_strongly_connected_components(self):
+        pass
 
     def test_random_graphs(self):
-        for i in range(1, 1000):
+        for i in range(1, 100):
             p = 0.001
             while p < 1:
                 G = nx.fast_gnp_random_graph(i, p, directed=True)
                 A = eswaran_tarjan(G)
-                n = edgesForAugment(G)
-                G.add_edges_from(A)
-                assert_true(nx.algorithms.is_strongly_connected(G))
-                if n is not None:
-                    assert_equal(len(A), n)
+                assert_true(is_correctly_augmented(G, A))
                 p += 0.2
-

@@ -1,10 +1,10 @@
 import networkx as nx
-from typing import List, Set
+from typing import Set, Dict
 from networkx.utils.decorators import not_implemented_for
 
 
 @not_implemented_for('undirected')
-def getSourcesSinksIsolated(G: nx.DiGraph):
+def getSourcesSinksIsolated(G: nx.DiGraph) -> Dict:
     """
 
     Parameters
@@ -14,8 +14,7 @@ def getSourcesSinksIsolated(G: nx.DiGraph):
 
     Returns
     -------
-    (source, sinks, isolated)
-       Returns a triplet of sets (sources, sinks, isolated vertices) of G
+    Dict of sets with keys 'sources', 'sinks', 'isolated'
 
     Notes
     -----
@@ -39,5 +38,7 @@ def getSourcesSinksIsolated(G: nx.DiGraph):
         elif outDegree == 0:
             sinks.add(vertex)
 
-    return sources, sinks, isolated
+    result = {'sources': sources, 'sinks': sinks, 'isolated': isolated}
+
+    return result
 

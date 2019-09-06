@@ -48,25 +48,25 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
             raise nx.HasACycle("G has a cycle, acyclic graph expected")
         G_condensation = G
 
-    if len(G_condensation.nodes) <= 1:
+    if len(G_condensation.nodes) <= 1:  # The trivial case can be handled here
         return set()
-
-    unmarked: Set = set()
 
     sourcesSinksIsolated = getSourcesSinksIsolated(G_condensation)
 
-    sources: Set = sourcesSinksIsolated[0]
-    sinks: Set = sourcesSinksIsolated[1]
-    isolated: Set = sourcesSinksIsolated[2]
+    sources: Set = sourcesSinksIsolated['sources']
+    sinks: Set = sourcesSinksIsolated['sinks']
+    isolated: Set = sourcesSinksIsolated['isolated']
 
     s: int = len(sources)  # Number of sinks
     t: int = len(sinks)  # Number ou sources
     q: int = len(isolated)  # Number of isolated vertices
 
-    reverted = False
+    is_reversed = False
 
+    # If G_condensation has more sources than sinks, algorithm does not work.
+    # However, we can work on reversed graph and reverse edges in A later on.
     if s > t:
-        reverted = True
+        is_reversed = True
         s, t = t, s
         sources, sinks = sinks, sources
         G_condensation = G_condensation.reverse(copy=False)
@@ -75,39 +75,37 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
     w_list: List = []
 
     def search(x):
-        stack = [x]
-        unmarked.discard(x)
+        stack = [x]  # First vert to visit is x
+        unmarked.discard(x)  # And thus it is also marked
 
-        while len(stack) > 0:
-            x = stack.pop()
-            unmarked.discard(x)
-            # if x in unmarked:
-            if x in sinks:
-                return x
+        while len(stack) > 0:  # While there is a visited non-processed vertex
+            y = stack.pop()
+            unmarked.discard(y)
+            if y in sinks:  # We discovered there is an unmarked x-y path
+                return y
 
-            # unmarked.remove(x)
-            for y in G_condensation.neighbors(x):
-                if y in unmarked:
-                    # unmarked.discard(y)
-                    stack.append(y)
+            for z in G_condensation.neighbors(y):
+                if z in unmarked:  # No need to process already visited
+                    stack.append(z)
 
-        return None
+        return None  # There is no unmarked x-w path, where w is a sink
 
-    unmarked = set(G_condensation.nodes)
-    # initialize all nodes as unmarked
+    unmarked: Set = set(G_condensation.nodes)  # Initialize all nodes as unmarked
     unmarked_sources: Set = (set(G_condensation.nodes)).intersection(sources)
-    while len(unmarked_sources) > 0:  # some source is unmarked
-        v = unmarked_sources.pop()  # "choose some unmarked source v"
+    while len(unmarked_sources) > 0:  # Some source is unmarked
+        v = unmarked_sources.pop()  # Choose some unmarked source v
         w = search(v)
-        if w is not None:
+        if w is not None:  # None is returned when path to sink is blocked
             v_list.append(v)
             w_list.append(w)
 
-    p: int = len(v_list)
+    p: int = len(v_list)  # This is equivalent with p proposed in the original algorithm
 
+    # The edges not in v resp. w can be appended in an ambiguous ordering
     v_list.extend(sources.difference(set(v_list)))
     w_list.extend(sinks.difference(set(w_list)))
 
+    #  We can choose any member of a strongly connected component as a representative
     v_list = list(map(lambda x: G_condensation.nodes[x]['members'].pop(), v_list))
     w_list = list(map(lambda x: G_condensation.nodes[x]['members'].pop(), w_list))
     x_list = list(map(lambda x: G_condensation.nodes[x]['members'].pop(), isolated))
@@ -128,7 +126,7 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
 
     if p == 0:  # This also ensures that s == t == 0 and q > 1
         A.add((x_list[q-1], x_list[0]))  # Covers (x_q-1, x_0) closing the cycle
-    else:  # p > 0
+    else:  # p > 0, p > 0 iff s, t > 0
         if s == t:
             if q == 0:
                 A.add((w_list[p - 1], v_list[0]))  # Covers (w_p-1, v_0) closing the cycle
@@ -143,7 +141,7 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
                 A.add((w_list[t - 1], x_list[0]))  # Covers (w_t-1, x_0)
                 A.add((x_list[q - 1], v_list[0]))  # Covers (x_q-1, v_0) closing the cycle
 
-    if reverted:
-        A = set(map(lambda e: (e[1], e[0]), A))
+    if is_reversed:
+        A = set(map(lambda e: (e[1], e[0]), A))  # We simply switch the edge direction
 
     return A
