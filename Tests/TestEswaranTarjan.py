@@ -1,10 +1,18 @@
+"""
+Author: Tomas Jelinek
+Last change: 8.9.2019
+
+Description: Tests for the eswaran_tarjan(G) function
+"""
+
 from nose.tools import assert_set_equal, assert_raises, assert_false, assert_true
 import networkx as nx
 from Algo.EswaranTarjan import eswaran_tarjan
 from Algo.Util import get_sources_sinks_isolated
+from collections import Set
 
 
-def edges_for_augmentation(G) -> int:
+def arcs_for_augmentation(G: nx.DiGraph) -> int:
     """ Bounds the number of arcs needed to make G strongly connected
 
     Parameters
@@ -32,10 +40,7 @@ def edges_for_augmentation(G) -> int:
     if s + t + q > 1:
         return max(s, t) + q
     else:  # obviously s > 0 iff t > 0, thus s == t == 0
-        if q <= 1:
-            return 0
-        else:
-            return q
+        return 0
 
 
 def is_correctly_augmented(G: nx.DiGraph()) -> bool:
@@ -60,7 +65,7 @@ def is_correctly_augmented(G: nx.DiGraph()) -> bool:
 
     G = G.copy()
     A = eswaran_tarjan(G)
-    n = edges_for_augmentation(G)
+    n = arcs_for_augmentation(G)
     G.add_edges_from(A)
     return nx.algorithms.is_strongly_connected(G) and (len(A) == n)
 
@@ -82,6 +87,20 @@ class TestEswaranTarjan:
         assert_raises(nx.NetworkXNotImplemented, eswaran_tarjan, nx.MultiGraph())
         assert_raises(nx.NetworkXNotImplemented, eswaran_tarjan, nx.MultiDiGraph())
 
+    def test_output_format(self):
+        # Tests the type of the output on an elementary case. Expected a set of tuples of
+        # length 2. We only test the most trivial case in so as not to depend
+        # on the correctness of the implementation.
+
+        G = nx.DiGraph()
+        assert_true(isinstance(eswaran_tarjan(G), Set))
+        G.add_edge(0, 1)
+        result = eswaran_tarjan(G)
+        assert_true(isinstance(eswaran_tarjan(G), Set))
+        element = result.pop()
+        assert_true(isinstance(element, tuple))
+        assert_true(len(element) == 2)
+
     def test_non_condensation(self):
         # Testing non condensed graph with is_condensation=True, exception networkx.HasACycle expected
         G: nx.DiGraph = nx.cycle_graph(range(1, 4), nx.DiGraph())
@@ -99,6 +118,12 @@ class TestEswaranTarjan:
     def test_trivial(self):
         # Testing digraph with one vertex, empty set expected.
         assert_set_equal(eswaran_tarjan(nx.complete_graph(1, nx.DiGraph())), set(), "Expected empty set")
+
+    def test_directed_path_joins_ends(self):
+        # Testing if called on directed path,
+        # expected
+        for i in range(2, 11):
+            assert_set_equal(eswaran_tarjan(nx.path_graph(i, nx.DiGraph())), {(i - 1, 0)})
 
     """
     --------------------
@@ -152,7 +177,7 @@ class TestEswaranTarjan:
         # This will be done using generating number of graphs where
         # no two vertices are connected. G will have both, even and odd number
         # of vertices.
-        n = 0
+        n = 1
         for i in range(5):
             G: nx.DiGraph = nx.DiGraph()
             G.add_nodes_from({j for j in range(2 ** i + n)})
@@ -229,12 +254,7 @@ class TestEswaranTarjan:
     --------------------
     """
 
-    def test_directed_path_joins_ends(self):
-        # Testing if called on directed path,
-        # expected
-        for i in range(2, 11):
-            assert_set_equal(eswaran_tarjan(nx.path_graph(i, nx.DiGraph())), {(i - 1, 0)})
-
+    # TODO think about the necessity of this test and describe it in the test
     def test_tree_and_reversed(self):
         # Testing correct behaviour on trees, expecting to connect all leaves and one
         # leaf with root.

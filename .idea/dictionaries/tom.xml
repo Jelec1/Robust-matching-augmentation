@@ -2,6 +2,9 @@
   <dictionary name="tom">
     <words>
       <w>adjoint</w>
+      <w>endre</w>
+      <w>jelinek</w>
+      <w>kapali</w>
       <w>multigraph</w>
       <w>networkx</w>
       <w>outcoming</w>

@@ -1,12 +1,15 @@
 from math import inf
 import networkx as nx
 from typing import List, Dict, Set
+from Algo.Util import get_sources_sinks_isolated
 
 
-def sourceCover(D: nx.DiGraph, sources: Set, sinks: Set) -> Set:
-    # TODO use better dictionaries for logarithmic complexity
-    # TODO use union find data structure for sets
-    # TODO split the graph into components and calculate source cover on these (also in parallel)
+def sourceCover(D: nx.DiGraph) -> Set:
+
+    sources, sinks, isolated = get_sources_sinks_isolated(D)
+
+    sources = sources | isolated
+    sinks = sinks | isolated
 
     R: nx.DiGraph = D.reverse(copy=False)
     children: Dict[object, Set] = {}

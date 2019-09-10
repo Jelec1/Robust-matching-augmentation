@@ -1,3 +1,14 @@
+"""
+Author: Tomas Jelinek
+Last change: 8.9.2019
+
+Description: Implementation of the unweighted strong connectivity augmentation algorithm
+due to Eswaran and Tarjan, see ESWARAN, Kapali P; TARJAN, R Endre. Augmentation problems.
+SIAM Journal on Computing. 1976, vol. 5, no. 4, pp. 653–665 and its correction, due to
+RAGHAVAN, S. A note on Eswaran and Tarjan’s algorithm for the strong connectivity augmentation problem.
+In: The Next Wave in Computing, Optimization, and Decision Technologies. Springer, 2005, pp. 19–26.
+"""
+
 import networkx as nx
 from typing import List, Set
 from networkx.utils.decorators import not_implemented_for
@@ -52,11 +63,7 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
     if len(G_condensation.nodes) <= 1:  # The trivial case can be handled here
         return set()
 
-    sourcesSinksIsolated = get_sources_sinks_isolated(G_condensation)
-
-    sources: Set = sourcesSinksIsolated['sources']
-    sinks: Set = sourcesSinksIsolated['sinks']
-    isolated: Set = sourcesSinksIsolated['isolated']
+    sources, sinks, isolated = get_sources_sinks_isolated(G_condensation)
 
     s: int = len(sources)  # Number of sinks
     t: int = len(sinks)  # Number ou sources
@@ -93,18 +100,21 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
 
     unmarked: Set = set(G_condensation.nodes)  # Initialize all nodes as unmarked
     unmarked_sources: Set = (set(G_condensation.nodes)).intersection(sources)
-    while len(unmarked_sources) > 0:  # Some source is unmarked
+
+    while unmarked_sources:  # Some source is unmarked
         v = unmarked_sources.pop()  # Choose some unmarked source v
         w = search(v)
         if w is not None:  # None is returned when path to sink is blocked
             v_list.append(v)
             w_list.append(w)
+            sources.remove(v)
+            sinks.remove(w)
 
     p: int = len(v_list)  # This is equivalent with p proposed in the original algorithm
 
     # The edges not in v resp. w can be appended in an ambiguous ordering
-    v_list.extend(sources.difference(set(v_list)))
-    w_list.extend(sinks.difference(set(w_list)))
+    v_list.extend(sources)
+    w_list.extend(sinks)
 
     #  We can choose any member of a strongly connected component as a representative
     v_list = list(map(lambda x: G_condensation.nodes[x]['members'].pop(), v_list))

@@ -38,7 +38,7 @@ def get_sources_sinks_isolated(G: nx.DiGraph) -> Dict:
         elif outDegree == 0:
             sinks.add(vertex)
 
-    result = {'sources': sources, 'sinks': sinks, 'isolated': isolated}
+    result = sources, sinks, isolated
 
     return result
 

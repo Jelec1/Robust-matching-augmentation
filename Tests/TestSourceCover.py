@@ -28,7 +28,7 @@ for i in range(1):
         if r <= 1:
             torem.add(n)
     G.remove_nodes_from(torem)
-    for u in range(100):
+    for u in range(1, 100):
         p = r = random.randint(0, len(G) - 10)
         s = r = random.randint(p + 1, len(G) - 1)
         G.add_edge(p, s)
