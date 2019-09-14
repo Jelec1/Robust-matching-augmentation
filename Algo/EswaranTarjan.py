@@ -26,11 +26,8 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
        A directed graph.
 
     is_condensation : bool
-        Generic value False, True if G has no non-trivial strongly connected
-        component, which will be checked. If G has a strongly connected component,
-        exception HasACycle will be raised. If the parameter is False,
-        strongly connected components will be computed.
-
+        Generic value False, True if G has no strongly connected component.
+        If False, strongly connected components will be computed.
     Returns
     -------
     A : Set
@@ -41,14 +38,10 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
     ------
     NetworkX.NotImplemented:
         If G is undirected or a multigraph.
-    NetworkX.HasACycle:
-        If G has a cycle and is_condensation=True
-
     Notes
     -----
     Modified version of Eswaran and Tarjan's algorithm https://epubs.siam.org/doi/abs/10.1137/0205044
     and it's correction due to S. Raghavan https://link.springer.com/chapter/10.1007/0-387-23529-9_2
-
     """
 
     G_condensation: nx.DiGraph
@@ -56,8 +49,6 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
     if not is_condensation:
         G_condensation = nx.algorithms.condensation(G)
     else:
-        if not nx.algorithms.dag.is_directed_acyclic_graph(G):
-            raise nx.HasACycle("G is cyclic, acyclic graph expected")
         G_condensation = G
 
     if len(G_condensation.nodes) <= 1:  # The trivial case can be handled here
@@ -115,11 +106,13 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
     # The edges not in v resp. w can be appended in an ambiguous ordering
     v_list.extend(sources)
     w_list.extend(sinks)
+    x_list = list(isolated)
 
     #  We can choose any member of a strongly connected component as a representative
-    v_list = list(map(lambda x: G_condensation.nodes[x]['members'].pop(), v_list))
-    w_list = list(map(lambda x: G_condensation.nodes[x]['members'].pop(), w_list))
-    x_list = list(map(lambda x: G_condensation.nodes[x]['members'].pop(), isolated))
+    if not is_condensation:  # But only if G is not a condensation itself
+        v_list = list(map(lambda x: next(iter(G_condensation.nodes[x]['members'])), v_list))
+        w_list = list(map(lambda x: next(iter(G_condensation.nodes[x]['members'])), w_list))
+        x_list = list(map(lambda x: next(iter(G_condensation.nodes[x]['members'])), isolated))
 
     A: Set = set()
 

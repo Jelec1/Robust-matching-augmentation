@@ -2,14 +2,23 @@
   <dictionary name="tom">
     <words>
       <w>adjoint</w>
+      <w>bindewald</w>
+      <w>bipartition</w>
       <w>endre</w>
+      <w>eppstein</w>
+      <w>hommelsheim</w>
       <w>jelinek</w>
       <w>kapali</w>
+      <w>matchings</w>
       <w>multigraph</w>
+      <w>mühlenthaler</w>
       <w>networkx</w>
       <w>outcoming</w>
       <w>raghavan</w>
+      <w>schaudt</w>
+      <w>subgraph</w>
       <w>tarjan</w>
+      <w>viktor</w>
     </words>
   </dictionary>
 </component>
