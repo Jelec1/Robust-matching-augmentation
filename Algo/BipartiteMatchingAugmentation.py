@@ -23,7 +23,8 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
         Parameters
         ----------
         G : NetworkX Graph
-           A bipartite graph G = (A + B, E), where G can be augmented, that is |A + B| >= 4
+           A bipartite graph G = (A + B, E), where G can be augmented, that is |A + B| >= 4.
+           G must also admit a perfect matching.
         A : Set
             A bipartition of G, where |A| = |A + B| / 2
         M: Dict = None
@@ -34,13 +35,12 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
         -------
         L : Set
            Set of edges from E(G) - M such that G admits a perfect matching even after a single arbitrary
-           edge is removed.
+           edge is removed. Edges are in form of (a, b), where a is from A and b from B
 
         Raises
         ------
         NetworkX.NotImplemented:
             If G is directed or a multigraph.
-
 
         Notes
         -----
@@ -95,14 +95,14 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
     C_0 = sourceCover(A_0)
     C_1 = sourceCover(A_1)
 
-    def markVertices(graph: nx.DiGraph, vertex, mark, maxMark: int):
+    def mark_vertices(graph: nx.DiGraph, vertex, mark, max_mark: int):
         # A subroutine marks all vertices reachable from DFS search that are not already marked.
-        # Starting from several vertices thus rons in O(n + m). Used while loop to prevent stack overflow.
+        # Starting from several vertices thus runs in O(n + m). Used while loop to prevent stack overflow.
 
         stack = [vertex]
         if mark not in graph.nodes[vertex]:
             graph.nodes[vertex][mark] = 0
-        if graph.nodes[vertex][mark] < maxMark:
+        if graph.nodes[vertex][mark] < max_mark:
             graph.nodes[vertex][mark] += 1
 
         while stack:
@@ -113,19 +113,19 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
                 if mark not in graph.nodes[neighbour]:
                     graph.nodes[neighbour][mark] = 0
 
-                if graph.nodes[neighbour][mark] < maxMark:
+                if graph.nodes[neighbour][mark] < max_mark:
                     graph.nodes[neighbour][mark] += 1
                     stack.append(neighbour)
 
     for source in C_0:
-        markVertices(D_condensation, source, "C1X", 1)
+        mark_vertices(D_condensation, source, "C1X", 1)
 
     for source in C_1:
-        markVertices(D_condensation.reverse(copy=False), source, "XC2", 1)
+        mark_vertices(D_condensation.reverse(copy=False), source, "XC2", 1)
 
     for critical in X:
-        markVertices(D_condensation.reverse(copy=False), critical, "C1X", 2)
-        markVertices(D_condensation, critical, "XC2", 2)
+        mark_vertices(D_condensation.reverse(copy=False), critical, "C1X", 2)
+        mark_vertices(D_condensation, critical, "XC2", 2)
 
     D_hat_vertices: Set = set()
 
