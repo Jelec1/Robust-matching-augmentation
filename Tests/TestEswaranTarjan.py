@@ -8,7 +8,7 @@ Description: Tests for the eswaran_tarjan(G) function
 from nose.tools import assert_set_equal, assert_raises, assert_false, assert_true
 import networkx as nx
 from Algo.EswaranTarjan import eswaran_tarjan
-from Algo.Util import get_sources_sinks_isolated
+from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
 from collections import Set
 
 
@@ -32,10 +32,10 @@ def arcs_for_augmentation(G: nx.DiGraph) -> int:
     """
     G = nx.algorithms.condensation(G)
 
-    sources_sinks_isolated = get_sources_sinks_isolated(G)
-    s: int = len(sources_sinks_isolated['sources'])
-    t: int = len(sources_sinks_isolated['sinks'])
-    q: int = len(sources_sinks_isolated['isolated'])
+    sources, sinks, isolated = get_sources_sinks_isolated(G)
+    s: int = len(sources)
+    t: int = len(sinks)
+    q: int = len(isolated)
 
     if s + t + q > 1:
         return max(s, t) + q
@@ -100,16 +100,6 @@ class TestEswaranTarjan:
         element = result.pop()
         assert_true(isinstance(element, tuple))
         assert_true(len(element) == 2)
-
-    def test_non_condensation(self):
-        # Testing non condensed graph with is_condensation=True, exception networkx.HasACycle expected
-        G: nx.DiGraph = nx.cycle_graph(range(1, 4), nx.DiGraph())
-        assert_raises(nx.HasACycle, eswaran_tarjan, G, True)
-        G.add_node(0)
-        assert_raises(nx.HasACycle, eswaran_tarjan, G, True)
-        G.clear()
-        G.add_edges_from({(0, 1), (1, 0)})
-        assert_raises(nx.HasACycle, eswaran_tarjan, G, True)
 
     def test_empty(self):
         # Testing on empty digraph, empty set expected.

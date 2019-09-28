@@ -1,13 +1,11 @@
-from math import inf
 import networkx as nx
-from typing import List, Dict, Set
-from Algo.Util import get_sources_sinks_isolated
+from typing import Dict, Set
+from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
+from Algo.RedBlackTree import RedBlackTree
 
 
-def sourceCover(D: nx.DiGraph) -> Set:
-
+def source_cover(D: nx.DiGraph) -> Set:
     sources, sinks, isolated = get_sources_sinks_isolated(D)
-
     sources = sources | isolated
     sinks = sinks | isolated
 
@@ -33,27 +31,46 @@ def sourceCover(D: nx.DiGraph) -> Set:
         sinkAccessibility(sink, None)
 
     # We now solve the source cover problem using greedy algorithm
+
+    fathers: Dict[object, Set] = {}
+    for sink in children:
+        for source in children[sink]:
+            if sink not in fathers:
+                fathers[sink] = set()
+            fathers[sink].add(source)
+
+    import time
+    start_time = time.time()
+
     cover: Set = set()
-    covered: Set = set()
+    covered = 0
 
-    while len(covered) < len(sinks):
-        r_min = inf
-        best_source = None
-        discard = set()
+    red_black_tree = RedBlackTree()
+    for source in sources:
+        red_black_tree.add(len(children[source]), source)
 
-        for source in sources:
-            will_be_covered = len(children[source] - covered)
-            if will_be_covered == 0:
-                continue
+    while covered < len(sinks):
 
-            r_i = 1 / will_be_covered  # c_i = len(children[source])
-            if r_i < r_min:
-                best_source = source
-                r_min = r_i
-
-        sources = sources - discard
-        covered = covered | children[best_source]
+        best_source = red_black_tree.extractMax()
         cover.add(best_source)
-        sources.remove(best_source)
+        covered += len(children[best_source])
 
+        updated_sources: Dict = {}
+        for sink in children[best_source]:
+            for source in fathers[sink] - {best_source}:
+                if source not in updated_sources:
+                    updated_sources[source] = len(children[updated_sources])
+                children[source].remove(sink)
+            fathers.pop(sink)
+
+        red_black_tree.remove(len(children[best_source]), best_source)
+        children.pop(best_source)
+
+        for source in updated_sources:
+            red_black_tree.remove(updated_sources[source], source)
+            if len(children[updated_sources]) > 0:
+                red_black_tree.add(len(children[updated_sources], source))
+
+    if len(D.nodes) > 100:
+        print("--- %s seconds ---" % (time.time() - start_time))
     return cover

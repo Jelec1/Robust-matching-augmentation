@@ -10,7 +10,7 @@ due to Implementation is based on BINDEWALD, Viktor; HOMMELSHEIM, Felix; MÜHLEN
 import networkx as nx
 from typing import Dict, Set
 from Algo.EswaranTarjan import eswaran_tarjan
-from Algo.SourceCover import sourceCover
+from Algo.SourceCover import source_cover
 from networkx.utils.decorators import not_implemented_for
 from Exceptions.Exceptions import BipartiteGraphNotAugmentableException
 
@@ -70,30 +70,38 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
 
     D_condensation: nx.DiGraph = nx.algorithms.components.condensation(D)
 
-    # We init A_0, A_1 to be the full subgraph of D, implemented as a graph view
-    A_0 = nx.induced_subgraph(D_condensation, D_condensation.nodes)
-    A_1 = nx.induced_subgraph(D_condensation.reverse(copy=False), D_condensation.nodes)
+    #start_time = time.time()
+
+    A_0 = D_condensation.copy()
+    A_1 = D_condensation.reverse(copy=True)
 
     for node in D_condensation:
-
         # Each trivial strong component is incident to some critical edge
         if len(D_condensation.nodes[node]['members']) == 1:
             X.add(node)
 
             if node in A_0.nodes:  # Remove all vertices reachable from trivial strong component in A_0
-                nodes = (set(A_0.nodes) - set(nx.algorithms.dfs_preorder_nodes(A_0, node))) | {node}
-                A_0 = nx.induced_subgraph(D_condensation, nodes)
+                A_0.remove_nodes_from(set(nx.algorithms.dfs_preorder_nodes(A_0, node)) - {node})
 
-            if node in A_1.nodes:  # Remove all vertices reachable from trivial strong component in A_1
-                nodes = (set(A_1.nodes) - set(nx.algorithms.dfs_preorder_nodes(A_1.reverse(copy=False), node))) | {node}
-                A_1 = nx.induced_subgraph(D_condensation.reverse(copy=False), nodes)
+            if node in A_1.nodes:  # Remove all vertices reachable from trivial strong component in A_0
+                A_1.remove_nodes_from(set(nx.algorithms.dfs_preorder_nodes(A_1, node)) - {node})
 
     if len(X) == 0:  # If there is no trivial strong component, G admits a perfect matching after edge removal
         return set()
 
-    # Use sourceCover to choose ln(n) approximation of choice of sources that cover all sinks in C_0, resp. C_1
-    C_0 = sourceCover(A_0)
-    C_1 = sourceCover(A_1)
+    # Use source_cover to choose ln(n) approximation of choice of sources that cover all sinks in C_0, resp. C_1
+    C_0 = source_cover(A_0)
+    C_1 = source_cover(A_1)
+    #if len(G.nodes) > 100:
+    #    print("--- %s seconds ---" % (time.time() - start_time))
+
+    #pool = Pool(2)
+    #r2 = pool.apply_async(source_cover, (A_0,))
+    #r3 = pool.apply_async(source_cover, (A_1,))
+    #C_0 = r2.get()
+    #C_1 = r3.get()
+
+
 
     def mark_vertices(graph: nx.DiGraph, vertex, mark, max_mark: int):
         # A subroutine marks all vertices reachable from DFS search that are not already marked.

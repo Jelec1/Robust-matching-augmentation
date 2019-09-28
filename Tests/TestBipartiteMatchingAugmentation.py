@@ -6,9 +6,8 @@ Description: Tests for the bipartite_matching_augmentation(G, M) function
 """
 import networkx as nx
 from Algo.BipartiteMatchingAugmentation import bipartite_matching_augmentation
-from Algo.Util import get_sources_sinks_isolated
-from nose.tools import assert_set_equal, assert_raises, assert_true, assert_equal
-from Exceptions.Exceptions import BipartiteGraphNotAugmentableException
+from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
+from nose.tools import assert_true, assert_equal
 from typing import Set, Dict
 
 
@@ -35,8 +34,9 @@ def bipartite_to_D(G: nx.Graph, A: Set) -> nx.DiGraph:
     return D
 
 
-def is_correctly_augmented(G: nx.Graph, A: Set) -> bool:
-    L = bipartite_matching_augmentation(G, A)
+def is_correctly_augmented(G: nx.Graph, A: Set, L=None) -> bool:
+    if L is None:
+        L = bipartite_matching_augmentation(G, A)
     G.add_edges_from(L)
 
     D = bipartite_to_D(G, A)
@@ -79,7 +79,7 @@ def default_matching_from_D(D: nx.DiGraph):
 
 
 class TestEswaranTarjan:
-
+    """
     def test_unaugmentable(self):
         # Testing on the only two cases when the bipartite graph cannot be augmented.
         # This happens when it consists only of two vertices, connected or disconnected
@@ -144,28 +144,29 @@ class TestEswaranTarjan:
         L = bipartite_matching_augmentation(G, A)
         assert_equal(len(L), 4)
         assert_true(is_correctly_augmented(G, A))
+    """
 
     def test_only_critical(self):
         D: nx.DiGraph = nx.DiGraph()
         nx.add_star(D, {i for i in range(1, 5)})
         nx.add_path(D, {i for i in range(5, 10)})
         D.add_nodes_from({i for i in range(10, 20)})
-
+        """
         G, A = D_to_bipartite(D)
         assert_true(is_correctly_augmented(G, A))
         sources, sinks, isolated = get_sources_sinks_isolated(D)
         s, t, q = len(sources), len(sinks), len(isolated)
         L = bipartite_matching_augmentation(G, A)
         assert_equal(len(L), max(s, t) + q)
-
+        """
         D.clear()
-        D = nx.balanced_tree(2, 10, nx.DiGraph())
+        D = nx.balanced_tree(2, 13, nx.DiGraph())
         D.remove_node(0)
         G, A = D_to_bipartite(D)
         sources, sinks, isolated = get_sources_sinks_isolated(D)
         s, t, q = len(sources), len(sinks), len(isolated)
-        assert_true(is_correctly_augmented(G, A))
         L = bipartite_matching_augmentation(G, A)
+        assert_true(is_correctly_augmented(G, A, L))
         assert_equal(len(L), max(s, t) + q)
 
     def test_set_coverage(self):

@@ -12,7 +12,7 @@ In: The Next Wave in Computing, Optimization, and Decision Technologies. Springe
 import networkx as nx
 from typing import List, Set
 from networkx.utils.decorators import not_implemented_for
-from Algo.Util import get_sources_sinks_isolated
+from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
 
 
 @not_implemented_for('undirected')
@@ -75,7 +75,6 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
 
     def search(x):
         stack = [x]  # First vert to visit is x
-        unmarked.discard(x)  # And thus it is also marked
 
         while len(stack) > 0:  # While there is a visited non-processed vertex
             y = stack.pop()

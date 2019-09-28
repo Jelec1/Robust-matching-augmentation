@@ -1,5 +1,5 @@
 import networkx as nx
-from Algo.BipartiteMatchingAugmentation import sourceCover
+from Algo.BipartiteMatchingAugmentation import source_cover
 import random
 import time
 
@@ -33,7 +33,7 @@ for i in range(1):
         s = r = random.randint(p + 1, len(G) - 1)
         G.add_edge(p, s)
     print(len(G))
-    res = sourceCover(G, {n for n in G if G.in_degree(n) == 0}, {n for n in G if G.out_degree(n) == 0})
+    res = source_cover(G, {n for n in G if G.in_degree(n) == 0}, {n for n in G if G.out_degree(n) == 0})
     print(time.time() - start)
 
     print(res)

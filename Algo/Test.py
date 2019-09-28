@@ -1,47 +1,60 @@
-import networkx as nx
-from Algo.BipartiteMatchingAugmentation import bipartite_matching_augmentation
-import time
+import os
 
-
-G = nx.path_graph(10)
-
-H: nx.Graph = nx.induced_subgraph(G, {i for i in range(9)})
-
-H.remove_node(5)
+from multiprocessing import Process
 
 
 
-T: nx.Graph = nx.balanced_tree(2, 10)
+print({1,2,3} > {1,2})
+########################################################################
 
-for n in nx.algorithms.dfs_preorder_nodes(T, 0):
-  if n % 10 == 0:
-    T.remove_node(n)
+# First let's get the process id for just running this script
 
-A = [i for i in range(1000)]
-B = [2*i for i in range(1000)]
-
-start_time = time.time()
-D = {}
-for i in A:
-  D[i] = 1
-for i in B:
-  if i in D:
-    D[i] = D[i] + 1
-
-C = set()
-for i in D:
-  if D[i] == 2:
-    C.add(D[i])
-end = time.time()
-print("--- %s seconds ---" % (end - start_time))
-
-start_time = time.time()
-C = set(A).intersection(set(B))
-end = time.time()
-print("--- %s seconds ---" % (end - start_time))
+#current = os.getpid()
+#print
+#"\nCurrent process:", current
 
 
+########################################################################
+
+# Now let's launch another process and get the id.
+
+def get_id():
+    # This function gets the parent process id (pp) and the current
+    # process id (p).
+
+    pp = os.getppid()
+    p = os.getpid()
+
+    print("parent process:", pp)
+    print("current process:", p)
 
 
+# Let's call the function get_id twice. The parent process should
+# have the same id in both cases but the current processes will have
+# different ids.
 
-# applicator(arr, x)
+#print("\nFirst call:")
+#p1 = Process(target=get_id)
+#p1.start()
+#p1.join()
+
+#print("\nSecond call:")
+#p2 = Process(target=get_id)
+#p2.start()
+#p2.join()
+
+########################################################################
+# Now let's demonstrate what happens if we call a process and start it
+# but forget to join it to the parent process before starting a new one.
+"""
+print("\nThis is what happens if we join() at the end:")
+
+print("\nFirst call:")
+p3 = Process(target=get_id)
+p3.start()
+
+print("\nSecond call:")
+p4 = Process(target=get_id)
+p4.start()
+p4.join()
+"""
