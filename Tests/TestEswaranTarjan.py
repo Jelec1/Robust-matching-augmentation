@@ -117,7 +117,7 @@ class TestEswaranTarjan:
 
     """
     --------------------
-    The following tests test the correct behaviour on marginal conditions
+    The following tests test the correct behaviour on corner cases
     in regard to s, t, p, q as defined in eswaran_tarjan
     --------------------
     """
@@ -240,7 +240,7 @@ class TestEswaranTarjan:
 
     """
     --------------------
-    End of testing marginal conditions regarding s, t, p, q
+    End of testing corner cases regarding s, t, p, q
     --------------------
     """
 

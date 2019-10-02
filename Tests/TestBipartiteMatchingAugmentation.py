@@ -6,8 +6,9 @@ Description: Tests for the bipartite_matching_augmentation(G, M) function
 """
 import networkx as nx
 from Algo.BipartiteMatchingAugmentation import bipartite_matching_augmentation
+from Exceptions.Exceptions import BipartiteGraphNotAugmentableException
 from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
-from nose.tools import assert_true, assert_equal
+from nose.tools import assert_true, assert_equal, assert_raises, assert_set_equal
 from typing import Set, Dict
 
 
@@ -34,7 +35,30 @@ def bipartite_to_D(G: nx.Graph, A: Set) -> nx.DiGraph:
     return D
 
 
-def is_correctly_augmented(G: nx.Graph, A: Set, L=None) -> bool:
+def is_correctly_augmented(G: nx.Graph, A: Set, L: Set = None) -> bool:
+    """ Returns a perfect matching of a bipartite graph G that corresponds to D
+
+    Parameters
+    ----------
+    G : NetworkX DiGraph
+       A bipartite graph.
+    A : Set
+        A bipartition of G.
+    L : Set
+        To-be proved augmenting set of G. Optional, computed otherwise.
+
+    Returns
+    -------
+    bool
+        True if G is correctly augmented, i.e. in underlying digraph D,
+        each strong component is non-trivial.
+
+    Notes
+    -----
+    Makes use of the observation that if each vertex in G lies on M-augmenting cycle,
+    then G is robust against edge-failure. However, this function does not check optimality of L.
+    """
+
     if L is None:
         L = bipartite_matching_augmentation(G, A)
     G.add_edges_from(L)
@@ -79,22 +103,22 @@ def default_matching_from_D(D: nx.DiGraph):
 
 
 class TestEswaranTarjan:
-    """
+
     def test_unaugmentable(self):
         # Testing on the only two cases when the bipartite graph cannot be augmented.
         # This happens when it consists only of two vertices, connected or disconnected
         G: nx.Graph = nx.Graph()
-        G.add_nodes_from({0,1})
+        G.add_nodes_from({0, 1})
         assert_raises(BipartiteGraphNotAugmentableException, bipartite_matching_augmentation, G, {0})
 
-        G.add_edge(0,1)
+        G.add_edge(0, 1)
         assert_raises(BipartiteGraphNotAugmentableException, bipartite_matching_augmentation, G, {0})
 
     def test_simple_already_robust(self):
         # Test a simple graph that is already robust
         G: nx.Graph = nx.Graph()
-        G.add_edges_from({(0,1), (0,3), (2,1), (2,3)})
-        assert_set_equal(bipartite_matching_augmentation(G, {0,2}), set())
+        G.add_edges_from({(0, 1), (0, 3), (2, 1), (2, 3)})
+        assert_set_equal(bipartite_matching_augmentation(G, {0, 2}), set())
 
     def test_simple_needs_to_be_augmented(self):
         # Tests a simple graph that admits a perfect matching and needs to be augmented
@@ -106,6 +130,7 @@ class TestEswaranTarjan:
         assert_set_equal(bipartite_matching_augmentation(G, {0, 2}), {(2, 1)})
 
     def test_more_strong_components(self):
+        # Tests more strong connected component, no augmentation is required
         D: nx.DiGraph = nx.DiGraph()
         nx.add_cycle(D, {1, 2})
         nx.add_cycle(D, {3, 4})
@@ -118,6 +143,10 @@ class TestEswaranTarjan:
         assert_set_equal(bipartite_matching_augmentation(G, A), set())
 
     def test_strong_components_and_critical_vert(self):
+        # Testing corner case when there are more strongly
+        # connected components and a single critical vertex.
+        # Expected the algorithm strongly connects the critical
+        # vertex to one of the strongly connected components.
         D: nx.DiGraph = nx.DiGraph()
         nx.add_cycle(D, {1, 2, 3})
         D.add_node(4)
@@ -131,7 +160,7 @@ class TestEswaranTarjan:
         assert_equal(len(L), 2)
         assert_true(is_correctly_augmented(G, A))
 
-    def test_strong_components_and_critical_verts(self):
+    def test_strong_components_and_critical_vertices(self):
         D: nx.DiGraph = nx.DiGraph()
         nx.add_cycle(D, {1, 2, 3})
         nx.add_cycle(D, {4, 5})
@@ -144,21 +173,23 @@ class TestEswaranTarjan:
         L = bipartite_matching_augmentation(G, A)
         assert_equal(len(L), 4)
         assert_true(is_correctly_augmented(G, A))
-    """
 
     def test_only_critical(self):
+        # Tests only critical vertices in form of trees, paths and stars,
+        # expected the algorithm correctly augments G and the augmenting set
+        # cardinality correspond the simple bound on Eswaran-Tarjan.
         D: nx.DiGraph = nx.DiGraph()
         nx.add_star(D, {i for i in range(1, 5)})
         nx.add_path(D, {i for i in range(5, 10)})
         D.add_nodes_from({i for i in range(10, 20)})
-        """
+
         G, A = D_to_bipartite(D)
         assert_true(is_correctly_augmented(G, A))
         sources, sinks, isolated = get_sources_sinks_isolated(D)
         s, t, q = len(sources), len(sinks), len(isolated)
         L = bipartite_matching_augmentation(G, A)
         assert_equal(len(L), max(s, t) + q)
-        """
+
         D.clear()
         D = nx.balanced_tree(2, 13, nx.DiGraph())
         D.remove_node(0)

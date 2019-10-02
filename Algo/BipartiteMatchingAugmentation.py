@@ -7,12 +7,15 @@ due to Implementation is based on BINDEWALD, Viktor; HOMMELSHEIM, Felix; MÜHLEN
         How to Secure Matchings Against Edge Failures. CoRR. 2018, vol. abs/1805.01299. Available from arXiv:
         1805.01299
 """
+
 import networkx as nx
 from typing import Dict, Set
 from Algo.EswaranTarjan import eswaran_tarjan
 from Algo.SourceCover import source_cover
+from Utils.AuxiliaryAlgorithms import fast_dfs
 from networkx.utils.decorators import not_implemented_for
 from Exceptions.Exceptions import BipartiteGraphNotAugmentableException
+from multiprocessing import Pool
 
 
 @not_implemented_for('directed')
@@ -70,8 +73,6 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
 
     D_condensation: nx.DiGraph = nx.algorithms.components.condensation(D)
 
-    #start_time = time.time()
-
     A_0 = D_condensation.copy()
     A_1 = D_condensation.reverse(copy=True)
 
@@ -80,28 +81,42 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
         if len(D_condensation.nodes[node]['members']) == 1:
             X.add(node)
 
+            vertices_to_remove = set()
+
+            # Defines action for fast_dfs, i.e. add current vertex
+            def action_on_vertex(current_vertex):
+                vertices_to_remove.add(current_vertex)
+                return True
+
+            # Action on neighbor, just continue with the neighbor
+            def action_on_neighbor(neighbor):
+                return True
+
             if node in A_0.nodes:  # Remove all vertices reachable from trivial strong component in A_0
-                A_0.remove_nodes_from(set(nx.algorithms.dfs_preorder_nodes(A_0, node)) - {node})
+                vertices_to_remove = set()
+                fast_dfs(A_0, node, action_on_vertex, action_on_neighbor)
+                vertices_to_remove.remove(node)
+                A_0.remove_nodes_from(vertices_to_remove)
 
             if node in A_1.nodes:  # Remove all vertices reachable from trivial strong component in A_0
-                A_1.remove_nodes_from(set(nx.algorithms.dfs_preorder_nodes(A_1, node)) - {node})
+                vertices_to_remove = set()
+                fast_dfs(A_1, node, action_on_vertex, action_on_neighbor)
+                vertices_to_remove.remove(node)
+                A_1.remove_nodes_from(vertices_to_remove)
 
     if len(X) == 0:  # If there is no trivial strong component, G admits a perfect matching after edge removal
         return set()
 
+    # C_0 = source_cover(A_0)
+    # C_1 = source_cover(A_1)
+
     # Use source_cover to choose ln(n) approximation of choice of sources that cover all sinks in C_0, resp. C_1
-    C_0 = source_cover(A_0)
-    C_1 = source_cover(A_1)
-    #if len(G.nodes) > 100:
-    #    print("--- %s seconds ---" % (time.time() - start_time))
-
-    #pool = Pool(2)
-    #r2 = pool.apply_async(source_cover, (A_0,))
-    #r3 = pool.apply_async(source_cover, (A_1,))
-    #C_0 = r2.get()
-    #C_1 = r3.get()
-
-
+    # We can run both independently in parallel
+    pool = Pool(2)
+    r2 = pool.apply_async(source_cover, (A_0,))
+    r3 = pool.apply_async(source_cover, (A_1,))
+    C_0 = r2.get()
+    C_1 = r3.get()
 
     def mark_vertices(graph: nx.DiGraph, vertex, mark, max_mark: int):
         # A subroutine marks all vertices reachable from DFS search that are not already marked.

@@ -58,13 +58,13 @@ def fast_dfs(G: nx.Graph, starting_vertex, action_on_vertex, action_on_neighbor)
        A graph to perform DFS on.
     starting_vertex : A vertex to start on
     action_on_vertex -> bool
-        function action_on_vertex(G: nx.Graph, vertex) -> bool
+        function action_on_vertex(vertex, G: nx.Graph=None) -> bool
         Performs operation(s) on current vertex specified by the function.
         If fast_dfs should continue, expecting True,
         if fast_dfs should terminate returning current vertex, expecting False.
 
     action_on_neighbor -> bool
-        function action_on_neighbor(G: nx.Graph, vertex) -> bool
+        function action_on_neighbor(vertex, G: nx.Graph=None) -> bool
         Performs operation(s) on neighbors of current vertex specified by the function.
         If fast_dfs should add also neighbor to the stack, expected True, otherwise False
 
@@ -80,11 +80,11 @@ def fast_dfs(G: nx.Graph, starting_vertex, action_on_vertex, action_on_neighbor)
 
     while len(stack) > 0:
         current_vertex = stack.pop()
-        if not action_on_vertex(G, current_vertex):
+        if not action_on_vertex(current_vertex):
             return current_vertex
 
         for neighbor in G.neighbors(current_vertex):
-            visit_neighbor = action_on_neighbor(G, neighbor)
+            visit_neighbor = action_on_neighbor(neighbor)
             if visit_neighbor:
                 stack.append(neighbor)
 

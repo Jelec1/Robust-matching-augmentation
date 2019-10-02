@@ -1,7 +1,7 @@
 import networkx as nx
 from typing import Dict, Set
 from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
-from Algo.RedBlackTree import RedBlackTree
+from Utils.RedBlackTree import RedBlackTree
 
 
 def source_cover(D: nx.DiGraph) -> Set:
@@ -27,6 +27,9 @@ def source_cover(D: nx.DiGraph) -> Set:
             for child in R.neighbors(vertex):
                 sinkAccessibility(child, vertex)
 
+    import time
+    start_time = time.time()
+
     for sink in sinks:
         sinkAccessibility(sink, None)
 
@@ -38,9 +41,6 @@ def source_cover(D: nx.DiGraph) -> Set:
             if sink not in fathers:
                 fathers[sink] = set()
             fathers[sink].add(source)
-
-    import time
-    start_time = time.time()
 
     cover: Set = set()
     covered = 0
@@ -69,8 +69,8 @@ def source_cover(D: nx.DiGraph) -> Set:
         for source in updated_sources:
             red_black_tree.remove(updated_sources[source], source)
             if len(children[updated_sources]) > 0:
-                red_black_tree.add(len(children[updated_sources], source))
+                red_black_tree.add(len(children[updated_sources]), source)
 
     if len(D.nodes) > 100:
-        print("--- %s seconds ---" % (time.time() - start_time))
+        print("---source cover %s seconds ---" % (time.time() - start_time))
     return cover
