@@ -1,7 +1,7 @@
 import networkx as nx
 from typing import Dict, Set
-from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
-from Utils.RedBlackTree import RedBlackTree
+from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
+from utils.RedBlackTree import RedBlackTree
 
 
 def source_cover(D: nx.DiGraph) -> Set:

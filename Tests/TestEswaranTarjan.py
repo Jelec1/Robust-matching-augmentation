@@ -8,7 +8,7 @@ Description: Tests for the eswaran_tarjan(G) function
 from nose.tools import assert_set_equal, assert_raises, assert_false, assert_true
 import networkx as nx
 from Algo.EswaranTarjan import eswaran_tarjan
-from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
+from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
 from collections import Set
 
 

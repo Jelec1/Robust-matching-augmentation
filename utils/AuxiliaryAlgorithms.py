@@ -83,7 +83,7 @@ def fast_dfs(G: nx.Graph, starting_vertex, action_on_vertex, action_on_neighbor)
         if not action_on_vertex(current_vertex):
             return current_vertex
 
-        for neighbor in G.neighbors(current_vertex):
+        for neighbor in G[current_vertex]:
             visit_neighbor = action_on_neighbor(neighbor)
             if visit_neighbor:
                 stack.append(neighbor)

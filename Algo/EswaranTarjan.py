@@ -12,7 +12,7 @@ In: The Next Wave in Computing, Optimization, and Decision Technologies. Springe
 import networkx as nx
 from typing import List, Set
 from networkx.utils.decorators import not_implemented_for
-from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
+from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
 
 
 @not_implemented_for('undirected')
