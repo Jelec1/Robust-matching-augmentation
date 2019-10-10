@@ -160,6 +160,6 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False, sourcesSinksIso
     start = time.time()
 
     if is_reversed:
-        A = set(map(lambda e: (e[1], e[0]), A))  # We simply switch the edge direction
+        A = set(map(lambda e: (e[1], e[0]), A))  # We simply swap the edge direction
 
     return A

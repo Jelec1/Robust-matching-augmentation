@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7bb0d0d6-1a1a-4ae6-ac2c-9e59be494d4f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Algo/BipartiteMatchingAugmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Algo/BipartiteMatchingAugmentation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Algo/EswaranTarjan.py" beforeDir="false" afterPath="$PROJECT_DIR$/Algo/EswaranTarjan.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Algo/SourceCover.py" beforeDir="false" afterPath="$PROJECT_DIR$/Algo/SourceCover.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/TestBipartiteMatchingAugmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/TestBipartiteMatchingAugmentation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/AuxiliaryAlgorithms.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/AuxiliaryAlgorithms.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -244,7 +239,7 @@
       <workItem from="1570378999877" duration="62000" />
       <workItem from="1570396447287" duration="4215000" />
       <workItem from="1570610524486" duration="9000" />
-      <workItem from="1570648402264" duration="14958000" />
+      <workItem from="1570648402264" duration="15174000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1563831110424</created>
@@ -393,7 +388,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570141166954</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Overworked D_hat computation, 4-fold speed-up">
+      <created>1570727271114</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1570727271114</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TodoView">
@@ -443,7 +445,8 @@
     <MESSAGE value="Did tests for BipartiteMatchingAugmentation" />
     <MESSAGE value="Red black tree implementation of source cover" />
     <MESSAGE value="Did some performance enhancements" />
-    <option name="LAST_COMMIT_MESSAGE" value="Did some performance enhancements" />
+    <MESSAGE value="Overworked D_hat computation, 4-fold speed-up" />
+    <option name="LAST_COMMIT_MESSAGE" value="Overworked D_hat computation, 4-fold speed-up" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
