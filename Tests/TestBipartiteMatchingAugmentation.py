@@ -7,7 +7,7 @@ Description: Tests for the bipartite_matching_augmentation(G, M) function
 import networkx as nx
 from Algo.BipartiteMatchingAugmentation import bipartite_matching_augmentation
 from Exceptions.Exceptions import BipartiteGraphNotAugmentableException
-from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
+from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated, bipartite_to_D
 from nose.tools import assert_true, assert_equal, assert_raises, assert_set_equal
 from typing import Set, Dict
 
@@ -18,21 +18,6 @@ def D_to_bipartite(D: nx.DiGraph) -> (nx.Graph, Set):
     G.add_edges_from(set(map(lambda e: (e[1], M[e[0]]), D.edges)))
     G.add_edges_from(set(map(lambda k: (k, M[k]), M)))
     return G, set(D.nodes)
-
-
-def bipartite_to_D(G: nx.Graph, A: Set) -> nx.DiGraph:
-    D: nx.DiGraph = nx.DiGraph()
-    M: Dict = nx.algorithms.bipartite.eppstein_matching(G, A)
-
-    for u in M:  # Construction of D, iterate over all keys in M
-        if u in A:  # Add all edges from A to D
-            w = M[u]
-            D.add_node(u)
-
-            for uPrime in G.neighbors(w):  # Construct edges of D
-                if uPrime != u:
-                    D.add_edge(u, uPrime)
-    return D
 
 
 def is_correctly_augmented(G: nx.Graph, A: Set, L: Set = None) -> bool:
@@ -173,12 +158,13 @@ class TestEswaranTarjan:
         L = bipartite_matching_augmentation(G, A)
         assert_equal(len(L), 4)
         assert_true(is_correctly_augmented(G, A))
-"""
+        """
     def test_only_critical(self):
         # Tests only critical vertices in form of trees, paths and stars,
         # expected the algorithm correctly augments G and the augmenting set
         # cardinality correspond the simple bound on Eswaran-Tarjan.
         D: nx.DiGraph = nx.DiGraph()
+        """
         nx.add_star(D, {i for i in range(1, 5)})
         nx.add_path(D, {i for i in range(5, 10)})
         D.add_nodes_from({i for i in range(10, 20)})
@@ -189,14 +175,15 @@ class TestEswaranTarjan:
         s, t, q = len(sources), len(sinks), len(isolated)
         L = bipartite_matching_augmentation(G, A)
         assert_equal(len(L), max(s, t) + q)
-
+        """
         D.clear()
         D = nx.balanced_tree(2, 13, nx.DiGraph())
         D.remove_node(0)
         G, A = D_to_bipartite(D)
         sources, sinks, isolated = get_sources_sinks_isolated(D)
         s, t, q = len(sources), len(sinks), len(isolated)
-        L = bipartite_matching_augmentation(G, A)
+        for i in range(1):
+            L = bipartite_matching_augmentation(G, A)
         assert_true(is_correctly_augmented(G, A, L))
         assert_equal(len(L), max(s, t) + q)
 

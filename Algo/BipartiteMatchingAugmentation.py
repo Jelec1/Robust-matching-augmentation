@@ -12,11 +12,11 @@ import networkx as nx
 from typing import Dict, Set, List
 from Algo.EswaranTarjan import eswaran_tarjan
 from Algo.SourceCover import source_cover
-from utils.AuxiliaryAlgorithms import fast_dfs
+from utils.AuxiliaryAlgorithms import fast_dfs, bipartite_to_D
 from networkx.utils.decorators import not_implemented_for
 from Exceptions.Exceptions import BipartiteGraphNotAugmentableException
 from multiprocessing import Pool
-
+import time
 
 @not_implemented_for('directed')
 @not_implemented_for('multigraph')
@@ -55,26 +55,32 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
     if len(A) <= 1:  # Graph consisting of only one vertex at each bipartition cannot be augmented.
         raise BipartiteGraphNotAugmentableException("G cannot be augmented.")
 
+    start = time.time()
+    verystart = time.time()
+
     if M is None:  # User can specify her own matching for speed-up
         M: Dict = nx.algorithms.bipartite.eppstein_matching(G, A)
 
-    D: nx.DiGraph = nx.DiGraph()
+    print("Constructing matching", time.time() - start)
+    start = time.time()
 
-    for u in M:  # Construction of D, iterate over all keys in M
-        if u in A:  # Add all edges from A to D
-            w = M[u]
-            D.add_node(u)
+    D: nx.DiGraph = bipartite_to_D(G, A, M)
 
-            for uPrime in G[w]:  # Construct edges of D
-                if uPrime != u:
-                    D.add_edge(u, uPrime)
+    print("Computing D", time.time() - start)
+    start = time.time()
 
     X: Set = set()  # A set of vertices of D_condensation corresponding to trivial strong components of D
 
     D_condensation: nx.DiGraph = nx.algorithms.components.condensation(D)
 
+    print("Computing condensation", time.time() - start)
+    start = time.time()
+
     A_0 = D_condensation.copy()
     A_1 = D_condensation.reverse(copy=True)
+
+    print("Making two copies", time.time() - start)
+    start = time.time()
 
     for node in D_condensation:
         # Each trivial strong component is incident to some critical edge
@@ -89,7 +95,7 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
                 return True
 
             # Action on neighbor, just continue with the neighbor
-            def action_on_neighbor(neighbor):
+            def action_on_neighbor(neighbor, parent):
                 return True
 
             if node in A_0.nodes:  # Remove all vertices reachable from trivial strong component in A_0
@@ -107,11 +113,15 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
     if len(X) == 0:  # If there is no trivial strong component, G admits a perfect matching after edge removal
         return set()
 
-    # Use source_cover to choose ln(n) approximation of choice of sources that cover all sinks in C_0, resp. C_1
+    print("Deleting reachable from X", time.time() - start)
+    start = time.time()
 
+    # Use source_cover to choose ln(n) approximation of choice of sources that cover all sinks in C_0, resp. C_1
     C_0 = source_cover(A_0)
     C_1 = source_cover(A_1)
 
+    print("Twice source cover", time.time() - start)
+    start = time.time()
 
     # We can run both independently in parallel
     #pool = Pool(2)
@@ -120,45 +130,39 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
     #C_0 = r2.get()
     #C_1 = r3.get()
 
-    def mark_vertices(graph: nx.DiGraph, vertex, mark, max_mark: int):
-        # A subroutine marks all vertices reachable from DFS search that are not already marked.
-        # Starting from several vertices thus runs in O(n + m). Used while loop to prevent stack overflow.
+    # We now determine vertices that lie either on C_1X paths or XC_2 paths
+    # Vertices on C_1X paths are those visited when traveling from C_1 to X on
+    # D_condensation and from X to C_1 on D_condensation_reverse
+    CX_vertices = set()
+    XC_vertices = set()
+    D_condensation_reverse = D_condensation.reverse(copy=False)
 
-        stack = [vertex]
-        if mark not in graph.nodes[vertex]:
-            graph.nodes[vertex][mark] = 0
-        if graph.nodes[vertex][mark] < max_mark:
-            graph.nodes[vertex][mark] += 1
+    # Now, specify arguments for the fast DFS traversal
+    def action_on_vertex_CX(current_vertex):
+        CX_vertices.add(current_vertex)  # We have reached it from C, so add it in
+        return True
 
-        while stack:
-            vertex = stack.pop()
+    def action_on_neighbor_CX(neighbor, current_vertex):
+        return neighbor not in CX_vertices
 
-            for neighbour in graph[vertex]:
+    def action_on_vertex_XC(current_vertex):
+        XC_vertices.add(current_vertex)
+        return True
 
-                if mark not in graph.nodes[neighbour]:
-                    graph.nodes[neighbour][mark] = 0
-
-                if graph.nodes[neighbour][mark] < max_mark:
-                    graph.nodes[neighbour][mark] += 1
-                    stack.append(neighbour)
+    def action_on_neighbor_XC(neighbor, current_vertex):
+        return neighbor not in XC_vertices
 
     for source in C_0:
-        mark_vertices(D_condensation, source, "C1X", 1)
-
-    for source in C_1:
-        mark_vertices(D_condensation.reverse(copy=False), source, "XC2", 1)
+        fast_dfs(D_condensation, source, action_on_vertex_CX, action_on_neighbor_CX)  # Reachable from C_0 (search for X)
 
     for critical in X:
-        mark_vertices(D_condensation.reverse(copy=False), critical, "C1X", 2)
-        mark_vertices(D_condensation, critical, "XC2", 2)
+        fast_dfs(D_condensation, critical, action_on_vertex_CX, action_on_neighbor_CX)  # Reachable from X (search for C_2)
+        fast_dfs(D_condensation_reverse, critical, action_on_vertex_XC, action_on_neighbor_XC)  # Reachable from X (search for C_1)
 
-    D_hat_vertices: Set = set()
+    for source in C_1:
+        fast_dfs(D_condensation_reverse, source, action_on_vertex_XC, action_on_neighbor_XC)  # Reachable from C_2 (search for X)
 
-    # Vertices C1X or C2X paths are an intersection of vertices that received max mark.
-    for node in D_condensation:
-        if ("C1X" in D_condensation.nodes[node] and D_condensation.nodes[node]["C1X"] == 2) \
-                or ("XC2" in D_condensation.nodes[node] and D_condensation.nodes[node]["XC2"] == 2):
-            D_hat_vertices.add(node)
+    D_hat_vertices = CX_vertices & XC_vertices  # Intersection
 
     # Marginal case when single vertex cannot be connected to form non-trivial strongly connected component.
     # We need to add another arbitrary vertex, which always exists as |V(D)| is guaranteed to be > 2 and contains
@@ -167,8 +171,15 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
         vert = next(iter(D_hat_vertices))
         D_hat_vertices.add(next(iter(set(D_condensation.nodes) - {vert})))
 
+    print("Computing D_hat", time.time() - start)
+    start = time.time()
+
     D_hat = nx.classes.function.induced_subgraph(D_condensation, D_hat_vertices)
     L_star: Set = eswaran_tarjan(D_hat, is_condensation=True)
+
+    print("Eswaran Tarjan", time.time() - start)
+    print("TOTAL:", time.time() - verystart)
+    start = time.time()
 
     # Map vertices from L to vertices of L*
     return set(map(lambda e: (next(iter(D_condensation.nodes[e[1]]['members'])),

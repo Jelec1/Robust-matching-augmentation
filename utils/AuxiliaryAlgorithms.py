@@ -6,7 +6,7 @@ Description: Contains various auxiliary algorithms.
 """
 
 import networkx as nx
-from typing import Set
+from typing import Set, Dict
 from networkx.utils.decorators import not_implemented_for
 
 
@@ -50,6 +50,37 @@ def get_sources_sinks_isolated(G: nx.DiGraph) -> (Set, Set, Set):
     return result
 
 
+def bipartite_to_D(G: nx.Graph, A: Set, M:Dict = None) -> nx.DiGraph:
+    """ Transforms a bipartite graph to D as defined in the paper How to secure matching against edge failure
+
+    Parameters
+    ----------
+    G : NetworkX Graph
+       A bipartite graph.
+    A : Set
+        A bipartition of G.
+    M : Dict
+        A perfect bipartite matching of G, if none is provided,
+        it will be computed.
+    Returns
+    -------
+    A NetworkX DiGraph D.
+    """
+    D: nx.DiGraph = nx.DiGraph()
+    if M is None:
+        M = nx.algorithms.bipartite.eppstein_matching(G, A)
+
+    for u in M:  # Construction of D, iterate over all keys in M
+        if u in A:  # Add all edges from A to D
+            w = M[u]
+            D.add_node(u)
+
+            for uPrime in G.neighbors(w):  # Construct edges of D
+                if uPrime != u:
+                    D.add_edge(u, uPrime)
+    return D
+
+
 def fast_dfs(G: nx.Graph, starting_vertex, action_on_vertex, action_on_neighbor):
     """
     Parameters
@@ -84,7 +115,7 @@ def fast_dfs(G: nx.Graph, starting_vertex, action_on_vertex, action_on_neighbor)
             return current_vertex
 
         for neighbor in G[current_vertex]:
-            visit_neighbor = action_on_neighbor(neighbor)
+            visit_neighbor = action_on_neighbor(neighbor, current_vertex)
             if visit_neighbor:
                 stack.append(neighbor)
 

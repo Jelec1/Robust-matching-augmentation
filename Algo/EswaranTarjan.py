@@ -13,11 +13,12 @@ import networkx as nx
 from typing import List, Set
 from networkx.utils.decorators import not_implemented_for
 from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
+import time
 
 
 @not_implemented_for('undirected')
 @not_implemented_for('multigraph')
-def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
+def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False, sourcesSinksIsolated=None) -> Set:
     """Returns a set of edges A such that G(V, E + A) is strongly connected.
 
     Parameters
@@ -28,6 +29,8 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
     is_condensation : bool
         Generic value False, True if G has no strongly connected component.
         If False, strongly connected components will be computed.
+    sourcesSinksIsolated : (Set, Set, Set)
+        Sources, sinks and isolated vertices of G as defined in the original paper. If not provided, will be computed.
     Returns
     -------
     A : Set
@@ -45,6 +48,7 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
     """
 
     G_condensation: nx.DiGraph
+    start = time.time()
 
     if not is_condensation:
         G_condensation = nx.algorithms.condensation(G)
@@ -54,12 +58,17 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
     if len(G_condensation.nodes) <= 1:  # The trivial case can be handled here
         return set()
 
-    sources, sinks, isolated = get_sources_sinks_isolated(G_condensation)
+    if sourcesSinksIsolated is None:
+        sources, sinks, isolated = get_sources_sinks_isolated(G_condensation)
+    else:
+        sources, sinks, isolated = sourcesSinksIsolated
 
     s: int = len(sources)  # Number of sinks
     t: int = len(sinks)  # Number ou sources
     q: int = len(isolated)  # Number of isolated vertices
 
+    print("----Computing SourcesSinksIsolated", time.time() - start)
+    start = time.time()
     is_reversed = False
 
     # If G_condensation has more sources than sinks, algorithm does not work.
@@ -82,7 +91,7 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
             if y in sinks:  # We discovered there is an unmarked x-y path
                 return y
 
-            for z in G_condensation.neighbors(y):
+            for z in G_condensation[y]:
                 if z in unmarked:  # No need to process already visited
                     stack.append(z)
 
@@ -100,6 +109,9 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
             sources.remove(v)
             sinks.remove(w)
 
+    print("----Marking procedure", time.time() - start)
+    start = time.time()
+
     p: int = len(v_list)  # This is equivalent with p proposed in the original algorithm
 
     # The edges not in v resp. w can be appended in an ambiguous ordering
@@ -116,19 +128,19 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
     A: Set = set()
 
     for i in range(0, p - 1):  # Covers (w_0, v_1) ... (w_p-2, v_p-1)
-        A.add((w_list[i], v_list[i+1]))
+        A.add((w_list[i], v_list[i + 1]))
 
     for i in range(p, s):  # Covers (w_p, v_p) ... (w_s-1, v_s-1)
         A.add((w_list[i], v_list[i]))
 
     for i in range(s, t - 1):  # Covers (w_s, w_s+1) ... (w_t-2, w_t-1)
-        A.add((w_list[i], w_list[i+1]))
+        A.add((w_list[i], w_list[i + 1]))
 
     for i in range(0, q - 1):  # Covers (x_0, x_1) ... (x_q-2, x_q-1)
-        A.add((x_list[i], x_list[i+1]))
+        A.add((x_list[i], x_list[i + 1]))
 
     if p == 0:  # This also ensures that s == t == 0 and q > 1
-        A.add((x_list[q-1], x_list[0]))  # Covers (x_q-1, x_0) closing the cycle
+        A.add((x_list[q - 1], x_list[0]))  # Covers (x_q-1, x_0) closing the cycle
     else:  # p > 0, p > 0 iff s, t > 0
         if s == t:
             if q == 0:
@@ -143,6 +155,9 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False) -> Set:
             else:  # q > 0
                 A.add((w_list[t - 1], x_list[0]))  # Covers (w_t-1, x_0)
                 A.add((x_list[q - 1], v_list[0]))  # Covers (x_q-1, v_0) closing the cycle
+
+    print("----Connecting", time.time() - start)
+    start = time.time()
 
     if is_reversed:
         A = set(map(lambda e: (e[1], e[0]), A))  # We simply switch the edge direction

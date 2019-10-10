@@ -5,18 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7bb0d0d6-1a1a-4ae6-ac2c-9e59be494d4f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Robust Matching Augmentation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Robust Matching Augmentation.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Algo/BipartiteMatchingAugmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Algo/BipartiteMatchingAugmentation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Algo/EswaranTarjan.py" beforeDir="false" afterPath="$PROJECT_DIR$/Algo/EswaranTarjan.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Algo/SourceCover.py" beforeDir="false" afterPath="$PROJECT_DIR$/Algo/SourceCover.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Algo/Test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Algo/Test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Tests/TestBipartiteMatchingAugmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/TestBipartiteMatchingAugmentation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/TestEswaranTarjan.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/TestEswaranTarjan.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/AuxiliaryAlgorithms.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/AuxiliaryAlgorithms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/RedBlackTree.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/RedBlackTree.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/AuxiliaryAlgorithms.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/AuxiliaryAlgorithms.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -85,7 +79,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Test">
+  <component name="RunManager" selected="Python tests.TestBipartiteMatchingAugmentation">
     <configuration name="Test" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Robust Matching Augmentation" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -246,7 +240,11 @@
       <workItem from="1569783888368" duration="7957000" />
       <workItem from="1569872408945" duration="3206000" />
       <workItem from="1570046019406" duration="6052000" />
-      <workItem from="1570134248839" duration="4136000" />
+      <workItem from="1570134248839" duration="4758000" />
+      <workItem from="1570378999877" duration="62000" />
+      <workItem from="1570396447287" duration="4215000" />
+      <workItem from="1570610524486" duration="9000" />
+      <workItem from="1570648402264" duration="14958000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1563831110424</created>
@@ -388,7 +386,14 @@
       <option name="project" value="LOCAL" />
       <updated>1569704055083</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Did some performance enhancements">
+      <created>1570141166939</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1570141166954</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TodoView">
@@ -437,7 +442,8 @@
     <MESSAGE value="- Fixed an error concerning eswaran_tarjan parameter is_condensation&#10;- Bipartite matching augmentation algorithms added" />
     <MESSAGE value="Did tests for BipartiteMatchingAugmentation" />
     <MESSAGE value="Red black tree implementation of source cover" />
-    <option name="LAST_COMMIT_MESSAGE" value="Red black tree implementation of source cover" />
+    <MESSAGE value="Did some performance enhancements" />
+    <option name="LAST_COMMIT_MESSAGE" value="Did some performance enhancements" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -470,119 +476,6 @@
     <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$TestEswaranTarjan.coverage" NAME="TestEswaranTarjan Coverage Results" MODIFIED="1570046480725" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$Test.coverage" NAME="Test Coverage Results" MODIFIED="1570139258541" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Algo" />
     <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$BipartiteMatchingAugmentation.coverage" NAME="BipartiteMatchingAugmentation Coverage Results" MODIFIED="1567947218445" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Algo" />
-    <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$TestBipartiteMatchingAugmentation.coverage" NAME="TestBipartiteMatchingAugmentation Coverage Results" MODIFIED="1570135424543" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-  </component>
-  <component name="debuggerHistoryManager">
-    <expressions id="breakpointCondition">
-      <expression>
-        <expression-string>correct == False</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>n is not None and n != len(A) and n &lt;= 10</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>len(A) != n and n is not None</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>len(A) != n</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>w == None</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>p-1 &gt; len(w_list) or s &gt; len(w_list)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>p - 1 &gt; len(w_list)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>p - 1 &lt; 0</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>len(A) &gt; max(s, t) + q</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>p - 1 &gt;= len(w_list) or s &gt;= len(w_list)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-    </expressions>
-    <expressions id="setValue">
-      <expression>
-        <expression-string>[(0, 1), (0, 2), (1, 2), (2, 1)]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>{(0,1), (1,2)}</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-    </expressions>
-    <expressions id="evaluateExpression">
-      <expression>
-        <expression-string>len(D_hat_vertices)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>node_to_remove.data</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>data in node_to_remove.data</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>to_update_sources[best_source]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>to_update_sources</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>to_update_sources[source]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>print({source for source in to_update_sources})</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>{source for source in to_update_sources}</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>{source in to_update_sources}</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-    </expressions>
+    <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$TestBipartiteMatchingAugmentation.coverage" NAME="TestBipartiteMatchingAugmentation Coverage Results" MODIFIED="1570726852345" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>

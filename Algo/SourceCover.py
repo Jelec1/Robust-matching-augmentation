@@ -1,37 +1,44 @@
 import networkx as nx
 from typing import Dict, Set
-from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
+from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated, fast_dfs
 from utils.RedBlackTree import RedBlackTree
 
 
-def source_cover(D: nx.DiGraph) -> Set:
+
+def source_cover(D: nx.DiGraph, R = None) -> Set:
+    import time
+    start = time.time()
+
     sources, sinks, isolated = get_sources_sinks_isolated(D)
     sources = sources | isolated
     sinks = sinks | isolated
 
-    R: nx.DiGraph = D.reverse(copy=False)
+    if R is None:
+        srh = time.time()
+        R: nx.DiGraph = D.reverse(copy=False)
+        print("-----Revertimg", time.time() - srh)
     children: Dict[object, Set] = {}
     vertexRank: Dict[object, int] = {}
 
-    def sinkAccessibility(vertex, parent):
-        if vertex not in vertexRank:  # as we can be sure that that vertex has never ever been accessed before
-            vertexRank[vertex] = R.in_degree(vertex)
-            if parent is None:
-                children[vertex] = {vertex}
-            else:
-                children[vertex] = children[parent]
-        else:
-            children[vertex] = children[vertex] | children[parent]  # it surely already has an entry
-        vertexRank[vertex] = vertexRank[vertex] - 1  # it is surely >= 1 as we must have gotten there from a parent
-        if vertexRank[vertex] <= 0:  # for source it can actually go under 1
-            for child in R.neighbors(vertex):
-                sinkAccessibility(child, vertex)
+    print("----Sources/sinks/isolated", time.time() - start)
+    start = time.time()
 
-    import time
-    start_time = time.time()
+    source = 0
 
-    for sink in sinks:
-        sinkAccessibility(sink, None)
+    def action_on_vertex(vertex):
+        return True
+
+    def action_on_neighbor(vertex, parent):
+        if vertex in sinks:
+            children[source] = children[source] | {vertex}
+        return True
+
+    for source in sources:
+        children[source] = {source}
+        fast_dfs(D, source, action_on_vertex, action_on_neighbor)
+
+    print("----Flattening D", time.time() - start)
+    start = time.time()
 
     # We now solve the source cover problem using greedy algorithm
 
@@ -71,6 +78,6 @@ def source_cover(D: nx.DiGraph) -> Set:
             if len(children[updated_sources]) > 0:
                 red_black_tree.add(len(children[updated_sources]), source)
 
-    if len(D.nodes) > 100:
-        print("---source cover %s seconds ---" % (time.time() - start_time))
+    print("----Greedy set cover", time.time() - start)
+    start = time.time()
     return cover
