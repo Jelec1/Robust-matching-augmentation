@@ -64,7 +64,24 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
     print("Constructing matching", time.time() - start)
     start = time.time()
 
-    D: nx.DiGraph = bipartite_to_D(G, A, M)
+    """
+    New piece of code
+    """
+    sources: Set = set()
+
+    D: nx.DiGraph = nx.DiGraph()
+    if M is None:
+        M = nx.algorithms.bipartite.eppstein_matching(G, A)
+
+    for u in M:  # Construction of D, iterate over all keys in M
+        if u in A:  # Add all edges from A to D
+            w = M[u]
+            D.add_node(u)
+
+            outgoing: int = 0
+            for uPrime in G.neighbors(w):  # Construct edges of D
+                if uPrime != u:
+                    D.add_edge(u, uPrime)
 
     print("Computing D", time.time() - start)
     start = time.time()

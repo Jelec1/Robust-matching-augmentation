@@ -50,7 +50,7 @@ def get_sources_sinks_isolated(G: nx.DiGraph) -> (Set, Set, Set):
     return result
 
 
-def bipartite_to_D(G: nx.Graph, A: Set, M:Dict = None) -> nx.DiGraph:
+def bvbipartite_to_D(G: nx.Graph, A: Set, M:Dict = None) -> nx.DiGraph:
     """ Transforms a bipartite graph to D as defined in the paper How to secure matching against edge failure
 
     Parameters
