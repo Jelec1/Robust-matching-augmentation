@@ -4,12 +4,14 @@ from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated, fast_dfs
 from utils.RedBlackTree import RedBlackTree
 
 
-
-def source_cover(D: nx.DiGraph, R = None) -> Set:
+def source_cover(D: nx.DiGraph, R: nx.DiGraph = None, sourcesSinksIsolated: (Set, Set, Set) = None) -> Set:
     import time
     start = time.time()
 
-    sources, sinks, isolated = get_sources_sinks_isolated(D)
+    if sourcesSinksIsolated is None:
+        sources, sinks, isolated = get_sources_sinks_isolated(D)
+    else:
+        sources, sinks, isolated = sourcesSinksIsolated
     sources = sources | isolated
     sinks = sinks | isolated
 
@@ -24,27 +26,32 @@ def source_cover(D: nx.DiGraph, R = None) -> Set:
     start = time.time()
 
     source = 0
+    reachableSinks = set()
 
     def action_on_vertex(vertex):
+        if vertex in sinks:
+            children[source] = children[source] | {vertex}
+            reachableSinks.add(vertex)
+            return False
         return True
 
     def action_on_neighbor(vertex, parent):
-        if vertex in sinks:
-            children[source] = children[source] | {vertex}
         return True
 
     for source in sources:
-        children[source] = {source}
+        children[source] = set()
         fast_dfs(D, source, action_on_vertex, action_on_neighbor)
 
     print("----Flattening D", time.time() - start)
     start = time.time()
 
     # We now solve the source cover problem using greedy algorithm
+    sinks = reachableSinks
 
+    #fathers = {sink: source for source, sink in children.items()}
     fathers: Dict[object, Set] = {}
-    for sink in children:
-        for source in children[sink]:
+    for source in children:
+        for sink in children[source]:
             if sink not in fathers:
                 fathers[sink] = set()
             fathers[sink].add(source)
@@ -65,9 +72,8 @@ def source_cover(D: nx.DiGraph, R = None) -> Set:
         updated_sources: Dict = {}
         for sink in children[best_source]:
             for source in fathers[sink] - {best_source}:
-                if source not in updated_sources:
-                    updated_sources[source] = len(children[updated_sources])
                 children[source].remove(sink)
+                updated_sources[source] = len(children[source])
             fathers.pop(sink)
 
         red_black_tree.remove(len(children[best_source]), best_source)
@@ -75,8 +81,8 @@ def source_cover(D: nx.DiGraph, R = None) -> Set:
 
         for source in updated_sources:
             red_black_tree.remove(updated_sources[source], source)
-            if len(children[updated_sources]) > 0:
-                red_black_tree.add(len(children[updated_sources]), source)
+            if len(children[source]) > 0:
+                red_black_tree.add(len(children[source]), source)
 
     print("----Greedy set cover", time.time() - start)
     start = time.time()

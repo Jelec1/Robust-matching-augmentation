@@ -5,6 +5,35 @@ import time
 import networkx as nx
 T = nx.balanced_tree(2, 17, create_using=nx.DiGraph())
 
+def negatebitstring(str):
+    new = ""
+
+    for bit in str:
+        if bit == "0":
+            new = new + "1"
+        else:
+            new = new + "0"
+
+    return new
+
+
+def RM(x,y):
+
+    if y == 1:
+        return ["00","01","10","11"]
+
+    x =RM(x, y-1)
+
+    left = [a + a for a in x]
+    right = [a + negatebitstring(a) for a in x]
+
+    print(left, right)
+    return left + right
+
+RM(1, 4)
+
+
+"""
 mean = 0
 for i in range(10):
 
@@ -36,3 +65,5 @@ for i in range(10):
     mean += 0.1 * end2/end1
 
     print(mean)
+    
+"""

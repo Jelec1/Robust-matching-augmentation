@@ -86,19 +86,45 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
     print("Computing D", time.time() - start)
     start = time.time()
 
-    X: Set = set()  # A set of vertices of D_condensation corresponding to trivial strong components of D
+    D_condensation: nx.DiGraph = nx.algorithms.components.condensation(D)  # Condensation - acyclic digraph
 
-    D_condensation: nx.DiGraph = nx.algorithms.components.condensation(D)
+    X: Set = set()  # A set of vertices of D_condensation corresponding to trivial strong components of D
+    isolated: Set = set()  # Set of isolated vertices
+    sources: Set = set()  # Set of vertices that are not isolated and have no ingoing arc
+    sinks: Set = set()  # Set of vertices that are not isolated and have no outgoing arc
+
+    # We do not use function sources, sinks, isolated for performance reasons
+    # Because we would either have to loop twice or check one more condition in the loop
+    # if we were to modify the function.
+    for vertex in D_condensation.nodes:
+        inDegree: int = D_condensation.in_degree(vertex)
+        outDegree: int = D_condensation.out_degree(vertex)
+
+        if len(D_condensation.nodes[vertex]['members']) == 1:
+            # Each trivial strong component is incident to some critical edge
+            X.add(vertex)
+        if inDegree == 0 and outDegree == 0:
+            # Isolated: neither ingoing nor outgoing arc
+            isolated.add(vertex)
+        elif inDegree == 0:
+            # Source: no ingoing arc and not isolated
+            sources.add(vertex)
+            # Sink: no outgoing arc and not isolated
+        elif outDegree == 0:
+            sinks.add(vertex)
 
     print("Computing condensation", time.time() - start)
     start = time.time()
 
-    A_0 = D_condensation.copy()
-    A_1 = D_condensation.reverse(copy=True)
+    #A_0 = D_condensation.copy()
+    #A_1 = D_condensation.reverse(copy=True)
+    A_0 = D_condensation
+    A_1 = D_condensation.reverse(copy=False)
 
     print("Making two copies", time.time() - start)
     start = time.time()
 
+    """
     for node in D_condensation:
         # Each trivial strong component is incident to some critical edge
         if len(D_condensation.nodes[node]['members']) == 1:
@@ -126,6 +152,7 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
                 fast_dfs(A_1, node, action_on_vertex, action_on_neighbor)
                 vertices_to_remove.remove(node)
                 A_1.remove_nodes_from(vertices_to_remove)
+    """
 
     if len(X) == 0:  # If there is no trivial strong component, G admits a perfect matching after edge removal
         return set()
@@ -134,8 +161,8 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
     start = time.time()
 
     # Use source_cover to choose ln(n) approximation of choice of sources that cover all sinks in C_0, resp. C_1
-    C_0 = source_cover(A_0)
-    C_1 = source_cover(A_1)
+    C_0 = source_cover(A_0, A_1, (sources, sinks, isolated))
+    C_1 = source_cover(A_1, A_0, (sources, sinks, isolated))
 
     print("Twice source cover", time.time() - start)
     start = time.time()
@@ -191,8 +218,13 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
     print("Computing D_hat", time.time() - start)
     start = time.time()
 
+    #  Update sources, sinks, isolated as intersection with D_hat_vertices
+    sources &= D_hat_vertices
+    sinks &= D_hat_vertices
+    isolated &= D_hat_vertices
+
     D_hat = nx.classes.function.induced_subgraph(D_condensation, D_hat_vertices)
-    L_star: Set = eswaran_tarjan(D_hat, is_condensation=True)
+    L_star: Set = eswaran_tarjan(D_hat, is_condensation=True, sourcesSinksIsolated=(sources, sinks, isolated))
 
     print("Eswaran Tarjan", time.time() - start)
     print("TOTAL:", time.time() - verystart)

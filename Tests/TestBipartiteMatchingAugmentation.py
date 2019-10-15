@@ -158,13 +158,13 @@ class TestEswaranTarjan:
         L = bipartite_matching_augmentation(G, A)
         assert_equal(len(L), 4)
         assert_true(is_correctly_augmented(G, A))
-        """
+       """
     def test_only_critical(self):
         # Tests only critical vertices in form of trees, paths and stars,
         # expected the algorithm correctly augments G and the augmenting set
         # cardinality correspond the simple bound on Eswaran-Tarjan.
         D: nx.DiGraph = nx.DiGraph()
-        """
+        """"
         nx.add_star(D, {i for i in range(1, 5)})
         nx.add_path(D, {i for i in range(5, 10)})
         D.add_nodes_from({i for i in range(10, 20)})
@@ -175,7 +175,7 @@ class TestEswaranTarjan:
         s, t, q = len(sources), len(sinks), len(isolated)
         L = bipartite_matching_augmentation(G, A)
         assert_equal(len(L), max(s, t) + q)
-        """
+       """
         D.clear()
         D = nx.balanced_tree(2, 13, nx.DiGraph())
         D.remove_node(0)

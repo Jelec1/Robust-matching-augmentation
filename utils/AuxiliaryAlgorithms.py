@@ -8,6 +8,7 @@ Description: Contains various auxiliary algorithms.
 import networkx as nx
 from typing import Set, Dict
 from networkx.utils.decorators import not_implemented_for
+from networkx.utils.heaps import PairingHeap
 
 
 @not_implemented_for('undirected')
@@ -50,7 +51,7 @@ def get_sources_sinks_isolated(G: nx.DiGraph) -> (Set, Set, Set):
     return result
 
 
-def bvbipartite_to_D(G: nx.Graph, A: Set, M:Dict = None) -> nx.DiGraph:
+def bipartite_to_D(G: nx.Graph, A: Set, M:Dict = None) -> nx.DiGraph:
     """ Transforms a bipartite graph to D as defined in the paper How to secure matching against edge failure
 
     Parameters
@@ -120,3 +121,24 @@ def fast_dfs(G: nx.Graph, starting_vertex, action_on_vertex, action_on_neighbor)
                 stack.append(neighbor)
 
     return None
+
+
+def heapIncreaseValue(heap: PairingHeap, key, new_value):
+    """
+    Parameters
+    ----------
+    heap : PairingHeap
+       A minimum heap implemented by networking that supports decrease key using new insert
+    key
+        A hashable identifier of object whose key should be decreased
+    new_value
+        New value of the object
+
+    Notes
+    -----
+    Serves as a wrap-up of the increase key operation. For decrease, use just insert with new key
+    """
+    min_value = heap.min()
+    heap.insert(key, min_value - 1)
+    heap.pop()
+    heap.insert(key, new_value)
