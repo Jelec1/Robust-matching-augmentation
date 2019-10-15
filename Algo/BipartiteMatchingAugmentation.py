@@ -18,6 +18,7 @@ from Exceptions.Exceptions import BipartiteGraphNotAugmentableException
 from multiprocessing import Pool
 import time
 
+
 @not_implemented_for('directed')
 @not_implemented_for('multigraph')
 def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
@@ -116,8 +117,8 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
     print("Computing condensation", time.time() - start)
     start = time.time()
 
-    #A_0 = D_condensation.copy()
-    #A_1 = D_condensation.reverse(copy=True)
+    # A_0 = D_condensation.copy()
+    # A_1 = D_condensation.reverse(copy=True)
     A_0 = D_condensation
     A_1 = D_condensation.reverse(copy=False)
 
@@ -168,11 +169,11 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
     start = time.time()
 
     # We can run both independently in parallel
-    #pool = Pool(2)
-    #r2 = pool.apply_async(source_cover, (A_0,))
-    #r3 = pool.apply_async(source_cover, (A_1,))
-    #C_0 = r2.get()
-    #C_1 = r3.get()
+    # pool = Pool(2)
+    # r2 = pool.apply_async(source_cover, (A_0,))
+    # r3 = pool.apply_async(source_cover, (A_1,))
+    # C_0 = r2.get()
+    # C_1 = r3.get()
 
     # We now determine vertices that lie either on C_1X paths or XC_2 paths
     # Vertices on C_1X paths are those visited when traveling from C_1 to X on
@@ -197,14 +198,18 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
         return neighbor not in XC_vertices
 
     for source in C_0:
-        fast_dfs(D_condensation, source, action_on_vertex_CX, action_on_neighbor_CX)  # Reachable from C_0 (search for X)
+        # Reachable from C_0 (search for X)
+        fast_dfs(D_condensation, source, action_on_vertex_CX, action_on_neighbor_CX)
 
     for critical in X:
-        fast_dfs(D_condensation, critical, action_on_vertex_CX, action_on_neighbor_CX)  # Reachable from X (search for C_2)
-        fast_dfs(D_condensation_reverse, critical, action_on_vertex_XC, action_on_neighbor_XC)  # Reachable from X (search for C_1)
+        # Reachable from X (search for C_2)
+        fast_dfs(D_condensation, critical, action_on_vertex_CX, action_on_neighbor_CX)
+        # Reachable from X (search for C_1)
+        fast_dfs(D_condensation_reverse, critical, action_on_vertex_XC, action_on_neighbor_XC)
 
     for source in C_1:
-        fast_dfs(D_condensation_reverse, source, action_on_vertex_XC, action_on_neighbor_XC)  # Reachable from C_2 (search for X)
+        # Reachable from C_2 (search for X)
+        fast_dfs(D_condensation_reverse, source, action_on_vertex_XC, action_on_neighbor_XC)
 
     D_hat_vertices = CX_vertices & XC_vertices  # Intersection
 

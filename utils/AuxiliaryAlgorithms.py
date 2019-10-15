@@ -142,3 +142,22 @@ def heapIncreaseValue(heap: PairingHeap, key, new_value):
     heap.insert(key, min_value - 1)
     heap.pop()
     heap.insert(key, new_value)
+
+
+def heapDelete(heap: PairingHeap, key):
+    """
+    Parameters
+    ----------
+    heap : PairingHeap
+       A minimum heap implemented by networking that supports decrease key using new insert
+    key
+        A hashable identifier of object whose key should be decreased
+
+    Notes
+    -----
+    Serves as wrap-up for deletion of element with given key in the heap.
+    """
+    min_value = heap.min()[1]
+    heap.insert(key, min_value - 1)
+    heap.pop()
+

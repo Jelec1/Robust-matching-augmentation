@@ -1,7 +1,8 @@
 import networkx as nx
 from typing import Dict, Set
-from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated, fast_dfs
+from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated, fast_dfs, heapDelete, heapIncreaseValue
 from utils.RedBlackTree import RedBlackTree
+from networkx.utils.heaps import PairingHeap
 
 
 def source_cover(D: nx.DiGraph, R: nx.DiGraph = None, sourcesSinksIsolated: (Set, Set, Set) = None) -> Set:
@@ -59,13 +60,17 @@ def source_cover(D: nx.DiGraph, R: nx.DiGraph = None, sourcesSinksIsolated: (Set
     cover: Set = set()
     covered = 0
 
+    heap = PairingHeap()
+    max_value = len(sinks)
     red_black_tree = RedBlackTree()
     for source in sources:
-        red_black_tree.add(len(children[source]), source)
+        # red_black_tree.add(len(children[source]), source)
+        heap.insert(source, max_value - len(children[source]))
 
     while covered < len(sinks):
 
-        best_source = red_black_tree.extractMax()
+        #best_source = red_black_tree.extractMax()
+        best_source = heap.pop()[0]
         cover.add(best_source)
         covered += len(children[best_source])
 
@@ -76,13 +81,16 @@ def source_cover(D: nx.DiGraph, R: nx.DiGraph = None, sourcesSinksIsolated: (Set
                 updated_sources[source] = len(children[source])
             fathers.pop(sink)
 
-        red_black_tree.remove(len(children[best_source]), best_source)
+        # red_black_tree.remove(len(children[best_source]), best_source)
         children.pop(best_source)
 
         for source in updated_sources:
-            red_black_tree.remove(updated_sources[source], source)
+            # red_black_tree.remove(updated_sources[source], source)
             if len(children[source]) > 0:
-                red_black_tree.add(len(children[source]), source)
+                # red_black_tree.add(len(children[source]), source)
+                heapIncreaseValue(heap, source, max_value - len(children[source]))
+            else:
+                heapDelete(heap, source)
 
     print("----Greedy set cover", time.time() - start)
     start = time.time()
