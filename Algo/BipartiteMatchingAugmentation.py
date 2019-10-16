@@ -51,6 +51,13 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
         Implementation is based on BINDEWALD, Viktor; HOMMELSHEIM, Felix; MÜHLENTHALER, Moritz; SCHAUDT, Oliver.
         How to Secure Matchings Against Edge Failures. CoRR. 2018, vol. abs/1805.01299. Available from arXiv:
         1805.01299
+
+        References
+        ----------
+        [1]  BINDEWALD, Viktor; HOMMELSHEIM, Felix; MÜHLENTHALER, Moritz; SCHAUDT, Oliver.
+        How to Secure Matchings Against Edge Failures. CoRR. 2018, vol. abs/1805.01299. Available from arXiv:
+        1805.01299
+
         """
 
     if len(A) <= 1:  # Graph consisting of only one vertex at each bipartition cannot be augmented.
@@ -162,8 +169,8 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
     start = time.time()
 
     # Use source_cover to choose ln(n) approximation of choice of sources that cover all sinks in C_0, resp. C_1
-    C_0 = source_cover(A_0, A_1, (sources, sinks, isolated))
-    C_1 = source_cover(A_1, A_0, (sources, sinks, isolated))
+    C_0 = source_cover(A_0, X, A_1, (sources, sinks, isolated))
+    C_1 = source_cover(A_1, X, A_0, (sources, sinks, isolated))
 
     print("Twice source cover", time.time() - start)
     start = time.time()

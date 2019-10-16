@@ -124,8 +124,9 @@ class TestEswaranTarjan:
         assert_set_equal(bipartite_matching_augmentation(G, A), set())
         nx.add_cycle(D, {5, 6, 7})
         G, A = D_to_bipartite(D)
-        assert_true(is_correctly_augmented(G, A))
-        assert_set_equal(bipartite_matching_augmentation(G, A), set())
+        L: Set = bipartite_matching_augmentation(G, A)
+        assert_true(is_correctly_augmented(G, A, L))
+        assert_set_equal(L, set())
 
     def test_strong_components_and_critical_vert(self):
         # Testing corner case when there are more strongly
@@ -157,14 +158,14 @@ class TestEswaranTarjan:
 
         L = bipartite_matching_augmentation(G, A)
         assert_equal(len(L), 4)
-        assert_true(is_correctly_augmented(G, A))
+        assert_true(is_correctly_augmented(G, A, L))
        """
     def test_only_critical(self):
         # Tests only critical vertices in form of trees, paths and stars,
         # expected the algorithm correctly augments G and the augmenting set
         # cardinality correspond the simple bound on Eswaran-Tarjan.
         D: nx.DiGraph = nx.DiGraph()
-        """"
+        """
         nx.add_star(D, {i for i in range(1, 5)})
         nx.add_path(D, {i for i in range(5, 10)})
         D.add_nodes_from({i for i in range(10, 20)})
