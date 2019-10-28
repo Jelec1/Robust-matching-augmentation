@@ -1,69 +1,108 @@
-import os
-
-from multiprocessing import Process
-import time
-import networkx as nx
-T = nx.balanced_tree(2, 17, create_using=nx.DiGraph())
-
-def negatebitstring(str):
-    new = ""
-
-    for bit in str:
-        if bit == "0":
-            new = new + "1"
-        else:
-            new = new + "0"
-
-    return new
+ints = [3, 107, 23, 47, 2, 281]
 
 
-def RM(x,y):
+"""q = 2
+d = 1749
+n = 6997
+xs = [2101, 3035, 6101, 30]
 
-    if y == 1:
-        return ["00","01","10","11"]
+for x in xs:
+    print("x", x)
+    notprime = ((x ** d) % n) != 1
+    print("((x ** d) % n) != 1", ((x ** d) % n))
+    for r in range(1,q):
+        notprime &= ((x ** ((2 ** r) * d)) % n) != n - 1
+        print("---r", r)
+        print("---x^(d*2^r)", ((x ** ((2 ** r) * d)) % n))
 
-    x =RM(x, y-1)
-
-    left = [a + a for a in x]
-    right = [a + negatebitstring(a) for a in x]
-
-    print(left, right)
-    return left + right
-
-RM(1, 4)
+    if notprime:
+        print(x)
+"""
 
 
 """
-mean = 0
-for i in range(10):
+n = len(text)
+l = 0
 
-    start = time.time()
-    x = set(nx.algorithms.traversal.dfs_preorder_nodes(T, 0))
+for c in ascii_uppercase:
+    n_i = 0
+    for char in text:
+        if char == c:
+            n_i += 1
+    l += (n_i)*(n_i-1) / ((n-1)*n)
 
-    end1 = time.time() - start
+L = 0.027*n/((n-1)*l -0.038*n + 0.065)
+print(L)
 
-    from utils.AuxiliaryAlgorithms import fast_dfs
+"""
+"""
+
+ass= [i for i in range(1,26) if math.gcd(i,26) == 1]
+
+print(ass)
+
+bss = [i for i in range(26)]
+
+xss = [i for i in range(26)]
+
+notfound = 0
+numfound = 0
+
+for a in ass:
+    for b in bss:
+        found = False
+        for x in xss:
+            if ((a*x + b) % 26) == x:
+                print("Found a b x", a, b, x)
+                numfound += 1
+                found = True
+        if not found:
+            print("Not found ", a, b)
+            notfound += 1
+
+print(notfound)
+print(numfound)
+"""
+
+"""
+msgprob = [1/6, 1/6, 1/3, 1/3]
+keyprob = [1/4, 1/4, 1/4, 1/4]
+
+table = [[3,1,2,1],
+        [2,0,3,3],
+        [1,3,0,2],
+        [0,2,1,0]]
+
+def getprob(number):
+    sum = 0
+    for row in range(4):
+        for cell in range(4):
+            if table[row][cell] == number:
+                sum += msgprob[row] * keyprob[cell]
+    return sum
 
 
-    verts = set()
-    # Defines action for fast_dfs, i.e. add current vertex
-    def action_on_vertex(current_vertex):
-        verts.add(current_vertex)
-        return True
+cryptprob = [getprob(i) for i in range(4)]
+
+print(cryptprob)
 
 
-    # Action on neighbor, just continue with the neighbor
-    def action_on_neighbor(neighbor):
-        return True
+def bayes(plain, crypto):
+    cp = 0
+    for i in range(4):
+        if table[plain][i] == crypto:
+            cp += 1
+    cp /= 4
 
-    start = time.time()
-    fast_dfs(T, 0, action_on_vertex, action_on_neighbor)
+    return msgprob[plain] * cp / cryptprob[crypto]
+
+bayestable = []
+for i in range(4):
+    bayestable.append([bayes(i,j) for j in range(4)])
 
 
-    end2 = time.time() - start
+print()
 
-    mean += 0.1 * end2/end1
-
-    print(mean)
-    
+for row in bayestable:
+    print(row)
 """
