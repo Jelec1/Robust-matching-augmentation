@@ -1,5 +1,15 @@
-ints = [3, 107, 23, 47, 2, 281]
+s = [195]
+sigma = [s[0] % 2]
+n = 11*43
+m = 4
 
+for i in range(1, m+2):
+    s.append((s[i-1]**2) % n)
+    sigma.append(s[i] % 2)
+    #print("i", i, "s_i", s[i])
+
+print(s)
+print(sigma)
 
 """q = 2
 d = 1749
