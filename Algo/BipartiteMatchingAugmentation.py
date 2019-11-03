@@ -12,7 +12,7 @@ import networkx as nx
 from typing import Dict, Set, List
 from Algo.EswaranTarjan import eswaran_tarjan
 from Algo.SourceCover import source_cover
-from utils.AuxiliaryAlgorithms import fast_dfs, bipartite_to_D
+from utils.AuxiliaryAlgorithms import fast_traversal, bipartite_to_D
 from networkx.utils.decorators import not_implemented_for
 from Exceptions.Exceptions import BipartiteGraphNotAugmentableException
 from multiprocessing import Pool
@@ -124,43 +124,11 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
     print("Computing condensation", time.time() - start)
     start = time.time()
 
-    # A_0 = D_condensation.copy()
-    # A_1 = D_condensation.reverse(copy=True)
     A_0 = D_condensation
     A_1 = D_condensation.reverse(copy=False)
 
     print("Making two copies", time.time() - start)
     start = time.time()
-
-    """
-    for node in D_condensation:
-        # Each trivial strong component is incident to some critical edge
-        if len(D_condensation.nodes[node]['members']) == 1:
-            X.add(node)
-
-            vertices_to_remove: Set = set()
-
-            # Defines action for fast_dfs, i.e. add current vertex
-            def action_on_vertex(current_vertex):
-                vertices_to_remove.add(current_vertex)
-                return True
-
-            # Action on neighbor, just continue with the neighbor
-            def action_on_neighbor(neighbor, parent):
-                return True
-
-            if node in A_0.nodes:  # Remove all vertices reachable from trivial strong component in A_0
-                vertices_to_remove = set()
-                fast_dfs(A_0, node, action_on_vertex, action_on_neighbor)
-                vertices_to_remove.remove(node)
-                A_0.remove_nodes_from(vertices_to_remove)
-
-            if node in A_1.nodes:  # Remove all vertices reachable from trivial strong component in A_0
-                vertices_to_remove = set()
-                fast_dfs(A_1, node, action_on_vertex, action_on_neighbor)
-                vertices_to_remove.remove(node)
-                A_1.remove_nodes_from(vertices_to_remove)
-    """
 
     if len(X) == 0:  # If there is no trivial strong component, G admits a perfect matching after edge removal
         return set()
@@ -169,18 +137,11 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
     start = time.time()
 
     # Use source_cover to choose ln(n) approximation of choice of sources that cover all sinks in C_0, resp. C_1
-    C_0 = source_cover(A_0, X, A_1, (sources, sinks, isolated))
-    C_1 = source_cover(A_1, X, A_0, (sources, sinks, isolated))
+    C_0 = source_cover(A_0, X, (sources, sinks, isolated))
+    C_1 = source_cover(A_1, X, (sinks, sources, isolated))
 
     print("Twice source cover", time.time() - start)
     start = time.time()
-
-    # We can run both independently in parallel
-    # pool = Pool(2)
-    # r2 = pool.apply_async(source_cover, (A_0,))
-    # r3 = pool.apply_async(source_cover, (A_1,))
-    # C_0 = r2.get()
-    # C_1 = r3.get()
 
     # We now determine vertices that lie either on C_1X paths or XC_2 paths
     # Vertices on C_1X paths are those visited when traveling from C_1 to X on
@@ -206,17 +167,17 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
 
     for source in C_0:
         # Reachable from C_0 (search for X)
-        fast_dfs(D_condensation, source, action_on_vertex_CX, action_on_neighbor_CX)
+        fast_traversal(D_condensation, source, action_on_vertex_CX, action_on_neighbor_CX)
 
     for critical in X:
         # Reachable from X (search for C_2)
-        fast_dfs(D_condensation, critical, action_on_vertex_CX, action_on_neighbor_CX)
+        fast_traversal(D_condensation, critical, action_on_vertex_CX, action_on_neighbor_CX)
         # Reachable from X (search for C_1)
-        fast_dfs(D_condensation_reverse, critical, action_on_vertex_XC, action_on_neighbor_XC)
+        fast_traversal(D_condensation_reverse, critical, action_on_vertex_XC, action_on_neighbor_XC)
 
     for source in C_1:
         # Reachable from C_2 (search for X)
-        fast_dfs(D_condensation_reverse, source, action_on_vertex_XC, action_on_neighbor_XC)
+        fast_traversal(D_condensation_reverse, source, action_on_vertex_XC, action_on_neighbor_XC)
 
     D_hat_vertices = CX_vertices & XC_vertices  # Intersection
 

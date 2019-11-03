@@ -1,3 +1,15 @@
+
+a = 1
+def fun(b):
+    #print(b)
+    b+=1
+    print(b)
+
+print(a)
+fun(a)
+print(a)
+
+"""
 s = [195]
 sigma = [s[0] % 2]
 n = 11*43
@@ -10,6 +22,18 @@ for i in range(1, m+2):
 
 print(s)
 print(sigma)
+""""""
+powers = [4354044]
+result = 4354044 ** 1
+i = 2
+while(result != 1):
+    result *= 4354044
+    result %= (3953 ** 2)
+    powers.append(result)
+    if result == 7334081:
+        print(i, result)
+    i+=1
+"""
 
 """q = 2
 d = 1749

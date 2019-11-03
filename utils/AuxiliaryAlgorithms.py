@@ -82,12 +82,12 @@ def bipartite_to_D(G: nx.Graph, A: Set, M:Dict = None) -> nx.DiGraph:
     return D
 
 
-def fast_dfs(G: nx.Graph, starting_vertex, action_on_vertex, action_on_neighbor):
+def fast_traversal(G: nx.Graph, starting_vertex, action_on_vertex, action_on_neighbor):
     """
     Parameters
     ----------
     G : NetworkX Graph
-       A graph to perform DFS on.
+       A graph to traverse.
     starting_vertex : A vertex to start on
     action_on_vertex -> bool
         function action_on_vertex(vertex, G: nx.Graph=None) -> bool

@@ -10,11 +10,11 @@ Description: Implementation of the source cover algorithm proposed by
 
 import networkx as nx
 from typing import Dict, Set
-from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated, fast_dfs, heapDelete, heapIncreaseValue
+from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated, fast_traversal, heapDelete, heapIncreaseValue
 from networkx.utils.heaps import PairingHeap
 
 
-def source_cover(D: nx.DiGraph, critical_vertices: Set, R: nx.DiGraph = None,
+def source_cover(D: nx.DiGraph, critical_vertices: Set,
                  sourcesSinksIsolated: (Set, Set, Set) = None) -> Set:
     """
     Computes a log n approximation of the minimal cardinality set of sources such that each
@@ -26,8 +26,8 @@ def source_cover(D: nx.DiGraph, critical_vertices: Set, R: nx.DiGraph = None,
         A directed acyclic graph.
     critical_vertices : Set
         Set of critical vertices of D
-    R : NetworkX DiGraph
-        Reversed graph D, optional.
+    --R : NetworkX DiGraph
+    --    Reversed graph D, optional.
     sourcesSinksIsolated : (Set, Set, Set)
         Set of sources, sinks and isolated vertices of D.
 
@@ -53,54 +53,53 @@ def source_cover(D: nx.DiGraph, critical_vertices: Set, R: nx.DiGraph = None,
     sources = sources | isolated  # We consider each isolated as a source
     sinks = sinks | isolated  # We consider each isolated as a sink
 
+    deleted_vertices = set()  # All vertices reachable from a critical vertex
+
     sinks &= critical_vertices
 
-    if R is None:
-        srh = time.time()
-        R: nx.DiGraph = D.reverse(copy=False)
-        print("-----Revertimg", time.time() - srh)
+    # if R is None:
+    #     srh = time.time()
+    #     R: nx.DiGraph = D.reverse(copy=False)
+    #     print("-----Revertimg", time.time() - srh)
 
     children: Dict[object, Set] = {}  # Contains all reachable critical vertices from given source
 
     print("----Sources/sinks/isolated", time.time() - start)
     start = time.time()
 
-    """
-    TO BE DETERMINED WHAT HAPPENS WITH DELETING AND SEARCHING FOR REACHABLE
-    """
-    deleted_vertices: Set = set()
-
     def action_on_vertex_delete_reachable(vertex):
-        return True
+        True
 
     def action_on_neighbor_delete_reachable(vertex, parent):
         neighbor_already_visited = vertex in deleted_vertices
         deleted_vertices.add(vertex)
         return not neighbor_already_visited
 
-    # for critical in critical_vertices:
-    #     fast_dfs(D, critical, action_on_vertex_delete_reachable, action_on_neighbor_delete_reachable)
+    for critical in critical_vertices:
+        fast_traversal(D, critical, action_on_vertex_delete_reachable, action_on_neighbor_delete_reachable)
 
-    reachableSinks = set()
+    sinks = sinks - deleted_vertices
+
+    # reachableSinks = set()
 
     def action_on_vertex_add_sinks(vertex):
         if vertex in sinks:
-            children[source] = children[source] | {vertex}
-            reachableSinks.add(vertex)
+            children[source].add(vertex)
+            # reachableSinks.add(vertex)
         return True
 
     def action_on_neighbor_add_sinks(vertex, parent):
         # return vertex not in deleted_vertices
-        return True
+        return vertex not in deleted_vertices
 
     for source in sources:
         children[source] = set()
-        fast_dfs(D, source, action_on_vertex_add_sinks, action_on_neighbor_add_sinks)
+        fast_traversal(D, source, action_on_vertex_add_sinks, action_on_neighbor_add_sinks)
 
     print("----Flattening D", time.time() - start)
     start = time.time()
 
-    sinks = reachableSinks
+    # sinks = reachableSinks
 
     # Inverts the children table, i.e. assigns each source pointer on its "father" source
     fathers: Dict[object, Set] = {}
@@ -127,6 +126,7 @@ def source_cover(D: nx.DiGraph, critical_vertices: Set, R: nx.DiGraph = None,
         updated_sources: Set = set()
         for sink in children[best_source]:  # For each newly covered sink
             for source in fathers[sink] - {best_source}:  # Update the info about sources containing covered sink
+                updated_sources.add(source)
                 children[source].remove(sink)  # Remove it from the set of sinks it covers
             fathers.pop(sink)  # Remove covered sink from the fathers set
 
