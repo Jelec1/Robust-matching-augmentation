@@ -18,12 +18,12 @@ import time
 
 @not_implemented_for('undirected')
 @not_implemented_for('multigraph')
-def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False, sourcesSinksIsolated=None) -> Set:
+def eswaran_tarjan(D: nx.DiGraph, is_condensation: bool = False, sourcesSinksIsolated=None) -> Set:
     """Returns a set of edges A such that G(V, E + A) is strongly connected.
 
     Parameters
     ----------
-    G : NetworkX DiGraph
+    D : NetworkX DiGraph
        A directed graph.
 
     is_condensation : bool
@@ -51,9 +51,9 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False, sourcesSinksIso
     start = time.time()
 
     if not is_condensation:
-        G_condensation = nx.algorithms.condensation(G)
+        G_condensation = nx.algorithms.condensation(D)
     else:
-        G_condensation = G
+        G_condensation = D
 
     if len(G_condensation.nodes) <= 1:  # The trivial case can be handled here
         return set()
