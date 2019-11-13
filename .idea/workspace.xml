@@ -8,7 +8,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Algo/EswaranTarjan.py" beforeDir="false" afterPath="$PROJECT_DIR$/Algo/EswaranTarjan.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Algo/SourceCover.py" beforeDir="false" afterPath="$PROJECT_DIR$/Algo/SourceCover.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/TestBipartiteMatchingAugmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/TestBipartiteMatchingAugmentation.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -252,7 +251,7 @@
       <workItem from="1572775174697" duration="22763000" />
       <workItem from="1573139300682" duration="7000" />
       <workItem from="1573422539418" duration="3567000" />
-      <workItem from="1573508133627" duration="10661000" />
+      <workItem from="1573508133627" duration="15776000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1563831110424</created>
@@ -464,7 +463,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572795636028</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="fixed bug in the tests">
+      <created>1573587932080</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1573587932080</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TodoView">
@@ -493,7 +499,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Source Cover implementation bug fixes and basic testing, seems to be working just fine" />
     <MESSAGE value="Overhauled augment algorithm up to constructing an input for source cover" />
     <MESSAGE value="Rewritten augment graph method, which needs to be still improved, though, written as neatly and clearly as possible" />
     <MESSAGE value="Implemented eswaran_tarjan according to the new paper, still have to test it" />
@@ -518,7 +523,8 @@
     <MESSAGE value="heap made operational in sourcecover" />
     <MESSAGE value="Made comments in the source cover" />
     <MESSAGE value="fix bug passing wrong argument to source cover" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix bug passing wrong argument to source cover" />
+    <MESSAGE value="fixed bug in the tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed bug in the tests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -547,11 +553,6 @@
           <url>file://$PROJECT_DIR$/Tests/TestBipartiteMatchingAugmentation.py</url>
           <line>154</line>
           <option name="timeStamp" value="156" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Algo/SourceCover.py</url>
-          <line>58</line>
-          <option name="timeStamp" value="171" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

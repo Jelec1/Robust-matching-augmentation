@@ -56,7 +56,6 @@ def source_cover(D: nx.DiGraph, critical_vertices: Set,
     deleted_vertices = set()  # All vertices reachable from a critical vertex
 
     # weak_sinks = sinks & critical_vertices
-    weak_sinks = critical_vertices
 
     children: Dict[object, Set] = {}  # Contains all reachable critical vertices from given source
 
@@ -74,7 +73,7 @@ def source_cover(D: nx.DiGraph, critical_vertices: Set,
     for critical in critical_vertices:
         fast_traversal(D, critical, action_on_vertex_delete_reachable, action_on_neighbor_delete_reachable)
 
-    weak_sinks = weak_sinks - deleted_vertices
+    weak_sinks = critical_vertices - deleted_vertices
 
     visited = set()
 
