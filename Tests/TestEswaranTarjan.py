@@ -244,7 +244,6 @@ class TestEswaranTarjan:
     --------------------
     """
 
-    # TODO think about the necessity of this test and describe it in the test
     def test_tree_and_reversed(self):
         # Testing correct behaviour on trees, expecting to connect all leaves and one
         # leaf with root.

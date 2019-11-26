@@ -26,8 +26,6 @@ def source_cover(D: nx.DiGraph, critical_vertices: Set,
         A directed acyclic graph.
     critical_vertices : Set
         Set of critical vertices of D
-    --R : NetworkX DiGraph
-    --    Reversed graph D, optional.
     sourcesSinksIsolated : (Set, Set, Set)
         Set of sources, weak_sinks and isolated vertices of D.
 

@@ -1,14 +1,22 @@
 
-a = 1
-def fun(b):
-    #print(b)
-    b+=1
-    print(b)
+a = [(i ** 456396) % 101021 for i in [3,5]]
+#print(a)
+S = 456396
+x = [i for i in range(1,6)]
+p = 567997
+y = [(456396 + a[0] * x_i + a[1] * x_i ** 2) % p for x_i in x]
+print(y)
 
-print(a)
-fun(a)
-print(a)
+sum = 0
+#y = [64104, 156586, 291500]
+for i in range(1, 4):
+    prod = 1
+    for j in range(1, 4):
+        if j != i:
+            prod *= (j) / (j - i)
+    sum += y[i - 1] * prod
 
+print(sum % p)
 """
 s = [195]
 sigma = [s[0] % 2]
