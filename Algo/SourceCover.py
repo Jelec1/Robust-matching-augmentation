@@ -1,6 +1,6 @@
 """
 Author: Tomas Jelinek
-Last change: 15.10.2019
+Last change: 27.11.2019
 
 Description: Implementation of the source cover algorithm proposed by
         BINDEWALD, Viktor; HOMMELSHEIM, Felix; MÜHLENTHALER, Moritz; SCHAUDT, Oliver.

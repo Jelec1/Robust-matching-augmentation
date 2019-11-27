@@ -7,8 +7,7 @@ Description: Tests for the source_tarjan(G) function
 
 import networkx as nx
 from Algo.BipartiteMatchingAugmentation import source_cover
-from nose.tools import assert_set_equal, assert_raises, assert_false, assert_true
-from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
+from nose.tools import assert_set_equal, assert_true
 from collections import Set
 
 
@@ -52,8 +51,8 @@ def test_tree_leafs_critical():
     # Tests D to be a tree, only leafs are critical
     # Source cover is expected to be {0} - the root
     D: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
-    critical = {node for node in D.nodes if D.out_degree(node) == 0}
-    cover = source_cover(D, critical)
+    critical: Set = {node for node in D.nodes if D.out_degree(node) == 0}
+    cover: Set = source_cover(D, critical)
     assert_set_equal(cover, {0})
 
 
@@ -61,56 +60,62 @@ def test_tree_leafs_non_critical():
     # Tests D to be a tree, no vertices are critcal
     # Source cover is expected to be empty
     D: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
-    cover = source_cover(D, set())
+    cover: Set = source_cover(D, set())
     assert_set_equal(cover, set())
 
 
+def test_tree_all_critical():
+    # Tests D to be a tree, all vertices are critical
+    # Source cover is expected to be the root
+    # Tests correct functionality of deletion of vertices
+    # reachable from a critical vertex
+    D: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
+    cover: Set = source_cover(D, set(D.nodes))
+    assert_set_equal(cover, {0})
 
 
+def test_tree_multiple_sources_leafs_critical():
+    # Tests D to be a tree, only leafs are critical
+    # There are multiple sources in the graphs, including two
+    # covering all the vertices. However, the optimal solution is
+    # still of size 1. Tests if it correctly does not consider these
+    # additional source.
+    D: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
+    D.add_edge(65, 1)
+    D.add_edge(65, 2)
+    D.add_edge(66, 15)
+    D.add_edge(65, 29)
+    D.add_edge(66, 38)
+    D.add_edge(67, 58)
+    critical = {node for node in D.nodes if D.out_degree(node) == 0}
+    cover = source_cover(D, critical)
+    assert_true(len(cover) == 1)
 
 
-"""
-gadfgasdfg
-asdfadsfgafdgadfgasdgasd
+def test_tree_multiple_sources_tree_critical():
+    # Tests D to be a tree, whole tree is critical
+    # There are multiple sources in the graphs, including two
+    # covering all the vertices. However, the optimal solution is
+    # still of size 1. In addition to test_tree_multiple_sources_leafs_critical(),
+    # this test also tests correctness of the deletion procedure.
+    # If it proceeds correctly, it does not consider the newly added sources
+    # as critical sinks, so the solution is still of size 1.
+    D: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
+    critical = set(D.nodes)
+    D.add_edges_from({(65, 1), (65, 2), (66, 15), (65, 29), (66, 38), (67, 58)})
+    cover = source_cover(D, critical)
+    assert_true(len(cover) == 1)
 
-fgasdgasd
 
-import  time
-import random
-
-for i in range(1):
-    start = time.time()
-    G: nx.DiGraph = nx.generators.classic.balanced_tree(2, 16, create_using=nx.DiGraph)
-    print(time.time() - start)
-    # G = nx.algorithms.traversal.dfs_tree(G, 0)
-    sources = set()
-    a = len(G)
-
-    print("DFS------")
-    start = time.time()
-    nx.algorithms.traversal.dfs_tree(G, 0)
-    print(time.time() - start)
-    print("DFS------")
-
-    for i in range(len(G) + 1, len(G) + 1 + 100):
-        j = random.randint(1, a - 1)
-        G.add_edge(i, j)
-        sources.add(i)
-    start = time.time()
-    torem = set()
-    for n in G:
-        r = random.randint(0, 100)
-        if r <= 1:
-            torem.add(n)
-    G.remove_nodes_from(torem)
-    for u in range(1, 100):
-        p = r = random.randint(0, len(G) - 10)
-        s = r = random.randint(p + 1, len(G) - 1)
-        G.add_edge(p, s)
-    print(len(G))
-    res = source_cover(G, {n for n in G if G.in_degree(n) == 0}, {n for n in G if G.out_degree(n) == 0})
-    print(time.time() - start)
-
-    print(res)
-    print("---------------------")
-"""
+def test_not_covering_critical():
+    # Test for unbounded approximation factor as discussed
+    # in section 2.1 the thesis. The optimal solution is 1. We use the
+    # minimal solution. Expected source cover is of length 1 if it works correctly.
+    D: nx.DiGraph = nx.DiGraph()
+    D.add_nodes_from(["s_1,2", "s_3,4", "s_5,6", "t_1", "t_2,3", "t_4,5", "t_6,7", "t_8,9"])
+    D.add_edges_from({
+        ("s_1,2", "t_1"), ("s_3,4", "t_1"), ("s_5,6", "t_1"), ("s_3,4", "t_2,3"), ("s_3,4", "t_4,5"),
+        ("s_5,6", "t_6,7"), ("s_5,6", "t_8,9")
+    })
+    cover = source_cover(D, {"t_1"})
+    assert_true(len(cover) == 1)
