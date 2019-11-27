@@ -107,7 +107,7 @@ def test_tree_multiple_sources_tree_critical():
     assert_true(len(cover) == 1)
 
 
-def test_not_covering_critical():
+def test_not_covering_non_critical():
     # Test for unbounded approximation factor as discussed
     # in section 2.1 the thesis. The optimal solution is 1. We use the
     # minimal solution. Expected source cover is of length 1 if it works correctly.
