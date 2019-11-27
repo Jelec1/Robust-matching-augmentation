@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7bb0d0d6-1a1a-4ae6-ac2c-9e59be494d4f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Algo/Test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/TestBipartiteMatchingAugmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/TestBipartiteMatchingAugmentation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/TestSourceCover.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/TestSourceCover.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -218,7 +219,7 @@
       <workItem from="1573901820557" duration="609000" />
       <workItem from="1573998751173" duration="27000" />
       <workItem from="1574513510028" duration="1433000" />
-      <workItem from="1574806300963" duration="7052000" />
+      <workItem from="1574806300963" duration="7337000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1563831110424</created>
@@ -472,7 +473,21 @@
       <option name="project" value="LOCAL" />
       <updated>1574815104530</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="Deleted my testing playground">
+      <created>1574815222331</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1574815222331</updated>
+    </task>
+    <task id="LOCAL-00038" summary="Deleted my testing playground">
+      <created>1574815356267</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1574815356267</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TodoView">
@@ -501,7 +516,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Implemented eswaran_tarjan according to the new paper, still have to test it" />
     <MESSAGE value="EswaranTarjan:&#10;Edited search procedure from tail recursion to for cycle&#10;Made some tests for eswaran_tarjan&#10;Implicitly added condensation" />
     <MESSAGE value="EswaranTarjan edited exception raise" />
     <MESSAGE value="EswaranTarjan - documentation, discard vertices from sets rather than remove, vertex is marked right away afterwards it is added to the stack&#10;BipartiteMatchingAugmentation - fixed bug, I was making a condensation twice, which was wrong" />
@@ -526,7 +540,8 @@
     <MESSAGE value="fixed bug in the tests" />
     <MESSAGE value="Working on tests for source cover" />
     <MESSAGE value="Tests for source cover" />
-    <option name="LAST_COMMIT_MESSAGE" value="Tests for source cover" />
+    <MESSAGE value="Deleted my testing playground" />
+    <option name="LAST_COMMIT_MESSAGE" value="Deleted my testing playground" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

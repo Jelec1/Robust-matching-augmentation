@@ -87,7 +87,7 @@ def default_matching_from_D(D: nx.DiGraph):
     return edges
 
 
-class TestEswaranTarjan:
+class TestBipartiteMatchingAugmentation:
 
     def test_unaugmentable(self):
         # Testing on the only two cases when the bipartite graph cannot be augmented.
