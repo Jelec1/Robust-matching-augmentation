@@ -12,7 +12,7 @@ import networkx as nx
 from typing import Dict, Set, List
 from Algo.EswaranTarjan import eswaran_tarjan
 from Algo.SourceCover import source_cover
-from utils.AuxiliaryAlgorithms import fast_traversal, bipartite_to_D
+from Utils.AuxiliaryAlgorithms import fast_traversal, bipartite_to_D
 from networkx.utils.decorators import not_implemented_for
 from Exceptions.Exceptions import BipartiteGraphNotAugmentableException
 from multiprocessing import Pool

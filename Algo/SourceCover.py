@@ -10,7 +10,7 @@ Description: Implementation of the source cover algorithm proposed by
 
 import networkx as nx
 from typing import Dict, Set
-from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated, fast_traversal, heapDelete, heapIncreaseValue
+from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated, fast_traversal, heapDelete, heapIncreaseValue
 from networkx.utils.heaps import PairingHeap
 
 

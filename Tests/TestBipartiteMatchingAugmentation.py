@@ -7,7 +7,7 @@ Description: Tests for the bipartite_matching_augmentation(G, M) function
 import networkx as nx
 from Algo.BipartiteMatchingAugmentation import bipartite_matching_augmentation
 from Exceptions.Exceptions import BipartiteGraphNotAugmentableException
-from utils.AuxiliaryAlgorithms import get_sources_sinks_isolated, bipartite_to_D
+from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated, bipartite_to_D
 from nose.tools import assert_true, assert_equal, assert_raises, assert_set_equal
 from typing import Set, Dict
 
