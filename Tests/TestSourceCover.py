@@ -81,12 +81,7 @@ def test_tree_multiple_sources_leafs_critical():
     # still of size 1. Tests if it correctly does not consider these
     # additional source.
     D: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
-    D.add_edge(65, 1)
-    D.add_edge(65, 2)
-    D.add_edge(66, 15)
-    D.add_edge(65, 29)
-    D.add_edge(66, 38)
-    D.add_edge(67, 58)
+    D.add_edges_from({(65, 1), (65, 2), (66, 15), (65, 29), (66, 38), (67, 58)})
     critical = {node for node in D.nodes if D.out_degree(node) == 0}
     cover = source_cover(D, critical)
     assert_true(len(cover) == 1)

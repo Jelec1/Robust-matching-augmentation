@@ -179,7 +179,6 @@ class TestEswaranTarjan:
 
         D.clear()
         D = nx.balanced_tree(2, 13, nx.DiGraph())
-        print("Nodes", len(D.node))
         D.remove_node(0)
         G, A = D_to_bipartite(D)
         sources, sinks, isolated = get_sources_sinks_isolated(D)
