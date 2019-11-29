@@ -1,6 +1,6 @@
 """
 Author: Tomas Jelinek
-Last change: 27.11.2019
+Last change: 29.11.2019
 
 Description: Tests for the source_tarjan(G) function
 """
@@ -79,7 +79,7 @@ class TestSourceCover:
         D.add_edges_from({(65, 1), (65, 2), (66, 15), (65, 29), (66, 38), (67, 58)})
         critical = {node for node in D.nodes if D.out_degree(node) == 0}
         cover = source_cover(D, critical)
-        assert_true(len(cover) == 1)
+        assert_true(cover == {0} or cover == {65})  # Only two correct options
 
     def test_tree_multiple_sources_tree_critical(self):
         # Tests D to be a tree, whole tree is critical
@@ -93,7 +93,7 @@ class TestSourceCover:
         critical = set(D.nodes)
         D.add_edges_from({(65, 1), (65, 2), (66, 15), (65, 29), (66, 38), (67, 58)})
         cover = source_cover(D, critical)
-        assert_true(len(cover) == 1)
+        assert_true(cover == {0})  # All others are reachable from a critical vertex, so this is only viable option.
 
     def test_not_covering_non_critical(self):
         # Test for unbounded approximation factor as discussed
