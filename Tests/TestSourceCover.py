@@ -88,7 +88,8 @@ class TestSourceCover:
         # Tests correct functionality of deletion of vertices
         # reachable from a critical vertex
         D: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
-        cover: Set = source_cover(D, set(D.nodes))
+        D.add_edges_from({(100, 50), (100, 51)})
+        cover: Set = source_cover(D, set(D.nodes) - {100})
         assert_set_equal(cover, {0})
 
     def test_tree_multiple_sources_leafs_critical(self):
