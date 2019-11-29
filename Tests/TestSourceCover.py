@@ -30,15 +30,15 @@ class TestSourceCover:
         assert_set_equal(cover, set())
 
     def test_child_critical(self):
-        # Tests D consisting of non-critical 0 connected to critical 1
+        # Tests D consisting of non-critical 0 and path to critical 4.
         # Source cover is expected to be {0}
-        D: nx.DiGraph = nx.DiGraph()
+        D: nx.DiGraph = nx.path_graph(5, nx.DiGraph())
         D.add_edge(0, 1)
-        cover = source_cover(D, {1})
+        cover = source_cover(D, {4})
         assert_set_equal(cover, {0})
 
     def test_child_non_critical(self):
-        # Tests D consisting of non-critical 0 connected to critical 1
+        # Tests D consisting of non-critical path.
         # Source cover is expected to be empty
         D: nx.DiGraph = nx.DiGraph()
         D.add_edge(0, 1)
