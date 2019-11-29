@@ -1,6 +1,6 @@
 """
 Author: Tomas Jelinek
-Last change: 14.9.2019
+Last change: 29.11.2019
 
 Description: Tests for the bipartite_matching_augmentation(G, M) function
 """
@@ -188,5 +188,44 @@ class TestBipartiteMatchingAugmentation:
         assert_true(is_correctly_augmented(G, A, L))
         assert_equal(len(L), max(s, t) + q)
 
-    def test_set_coverage(self):
-        pass
+    def test_bounded_approximation(self):
+        # Test for unbounded approximation factor as discussed
+        # in section 2.1 the thesis. The optimal solution is 1. The variable
+        # num_of_gadgets allows to set the number of vertices s_2, ... with its children
+        # to be added to the graph.
+        # Expected source cover is of length 1 if it works correctly.
+
+        U: Set = set()
+        num_of_gadgets = 2
+
+        G: nx.Graph = nx.Graph()
+        for i in range(1, num_of_gadgets + 2):
+            u1 = 's_' + str(2*i)
+            v1 = 's\'_' + str(2*i)
+            u2 = 's_' + str(2*i-1)
+            v2 = 's\'_' + str(2*i-1)
+            G.add_edge(u1, v1)
+            G.add_edge(u2, v2)
+            G.add_edge(u1, v2)
+            G.add_edge(u2, v1)
+            G.add_edge(v2, 't_1')
+            U.add(u1)
+            U.add(u2)
+
+        G.add_edge('t_1', 't\'_1')
+        U.add('t_1')
+
+        for i in range(1, num_of_gadgets + 1):
+            us = ['t_' + str(4*i + j) for j in range(-2, 2)]
+            vs = ['t\'_' + str(4 * i + j) for j in range(-2, 2)]
+
+            G.add_edges_from([(us[j], vs[j]) for j in range(len(us))])
+            G.add_edges_from([(us[2*j], vs[2*j+1]) for j in range(len(us) // 2)])
+            G.add_edges_from([(us[2 * j + 1], vs[2 * j]) for j in range(len(us) // 2)])
+            G.add_edge('t_' + str(4*i - 1), 's\'_' + str(2*i+1))
+            G.add_edge('t_' + str(4 * i + 1), 's\'_' + str(2 * i + 2))
+            U = U | set(us)
+
+        L = bipartite_matching_augmentation(G, U)
+
+        assert_true(len(L) == 1)

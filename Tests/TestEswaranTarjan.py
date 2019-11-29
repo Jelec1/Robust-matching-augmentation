@@ -7,7 +7,7 @@ Description: Tests for the eswaran_tarjan(G) function
 
 from nose.tools import assert_set_equal, assert_raises, assert_false, assert_true
 import networkx as nx
-from Algo.EswaranTarjan import eswaran_tarjan
+from Algo import EswaranTarjan
 from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
 from collections import Set
 
@@ -64,7 +64,7 @@ def is_correctly_augmented(G: nx.DiGraph()) -> bool:
     """
 
     G = G.copy()
-    A = eswaran_tarjan(G)
+    A = EswaranTarjan.eswaran_tarjan(G)
     n = arcs_for_augmentation(G)
     G.add_edges_from(A)
     return nx.algorithms.is_strongly_connected(G) and (len(A) == n)
@@ -76,16 +76,16 @@ class TestEswaranTarjan:
         # Testing on directed graph, no exception expected
         exception = False
         try:
-            eswaran_tarjan(nx.DiGraph())
+            EswaranTarjan.eswaran_tarjan(nx.DiGraph())
         except:
             exception = True
         assert_false(exception, "eswaran_tarjan should be implemented for networkx.DiGraph")
 
     def test_wrong_graph_type(self):
         # Testing on unsupported graph types, exception networkx.NetworkXNotImplemented expected
-        assert_raises(nx.NetworkXNotImplemented, eswaran_tarjan, nx.Graph())
-        assert_raises(nx.NetworkXNotImplemented, eswaran_tarjan, nx.MultiGraph())
-        assert_raises(nx.NetworkXNotImplemented, eswaran_tarjan, nx.MultiDiGraph())
+        assert_raises(nx.NetworkXNotImplemented, EswaranTarjan.eswaran_tarjan, nx.Graph())
+        assert_raises(nx.NetworkXNotImplemented, EswaranTarjan.eswaran_tarjan, nx.MultiGraph())
+        assert_raises(nx.NetworkXNotImplemented, EswaranTarjan.eswaran_tarjan, nx.MultiDiGraph())
 
     def test_output_format(self):
         # Tests the type of the output on an elementary case. Expected a set of tuples of
@@ -93,27 +93,27 @@ class TestEswaranTarjan:
         # on the correctness of the implementation.
 
         G = nx.DiGraph()
-        assert_true(isinstance(eswaran_tarjan(G), Set))
+        assert_true(isinstance(EswaranTarjan.eswaran_tarjan(G), Set))
         G.add_edge(0, 1)
-        result = eswaran_tarjan(G)
-        assert_true(isinstance(eswaran_tarjan(G), Set))
+        result = EswaranTarjan.eswaran_tarjan(G)
+        assert_true(isinstance(EswaranTarjan.eswaran_tarjan(G), Set))
         element = result.pop()
         assert_true(isinstance(element, tuple))
         assert_true(len(element) == 2)
 
     def test_empty(self):
         # Testing on empty digraph, empty set expected.
-        assert_set_equal(eswaran_tarjan(nx.DiGraph()), set(), "Expected empty set")
+        assert_set_equal(EswaranTarjan.eswaran_tarjan(nx.DiGraph()), set(), "Expected empty set")
 
     def test_trivial(self):
         # Testing digraph with one vertex, empty set expected.
-        assert_set_equal(eswaran_tarjan(nx.complete_graph(1, nx.DiGraph())), set(), "Expected empty set")
+        assert_set_equal(EswaranTarjan.eswaran_tarjan(nx.complete_graph(1, nx.DiGraph())), set(), "Expected empty set")
 
     def test_directed_path_joins_ends(self):
         # Testing if called on directed path,
         # expected
         for i in range(2, 11):
-            assert_set_equal(eswaran_tarjan(nx.path_graph(i, nx.DiGraph())), {(i - 1, 0)})
+            assert_set_equal(EswaranTarjan.eswaran_tarjan(nx.path_graph(i, nx.DiGraph())), {(i - 1, 0)})
 
     """
     --------------------

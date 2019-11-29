@@ -9,13 +9,12 @@ due to Implementation is based on BINDEWALD, Viktor; HOMMELSHEIM, Felix; MÜHLEN
 """
 
 import networkx as nx
-from typing import Dict, Set, List
+from typing import Dict, Set
 from Algo.EswaranTarjan import eswaran_tarjan
 from Algo.SourceCover import source_cover
-from Utils.AuxiliaryAlgorithms import fast_traversal, bipartite_to_D
+from Utils.AuxiliaryAlgorithms import fast_traversal
 from networkx.utils.decorators import not_implemented_for
 from Exceptions.Exceptions import BipartiteGraphNotAugmentableException
-from multiprocessing import Pool
 import time
 
 
