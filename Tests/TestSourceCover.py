@@ -53,6 +53,18 @@ class TestSourceCover:
         cover: Set = source_cover(D, critical)
         assert_set_equal(cover, {0})
 
+    def test_tree_leafs_critical_and_isolated(self):
+        # Tests D to be a tree, only leafs are critical
+        # and set of isolated
+        # Source cover is expected to be  root(D1) | isolated
+        D1: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
+        D2: nx.DiGraph = nx.DiGraph()
+        D2.add_nodes_from({i for i in range(100)})
+        D = nx.compose(D1, D2)
+        critical: Set = {node for node in D.nodes if D.in_degree(node) == 0}
+        cover: Set = source_cover(D, critical)
+        assert_set_equal(cover, critical)
+
     def test_two_disjoint_trees_leafs_critical(self):
         # Tests two trees, only leafs are critical
         # Source cover is expected to be {0} - the root
