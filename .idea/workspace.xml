@@ -224,7 +224,7 @@
       <workItem from="1574513510028" duration="1433000" />
       <workItem from="1574806300963" duration="9825000" />
       <workItem from="1575048337236" duration="5971000" />
-      <workItem from="1575056180294" duration="5395000" />
+      <workItem from="1575056180294" duration="7141000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <created>1563831110424</created>
@@ -541,7 +541,14 @@
       <option name="project" value="LOCAL" />
       <updated>1575061402164</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="Test for malicious instance">
+      <created>1575062511793</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1575062511793</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="TodoView">

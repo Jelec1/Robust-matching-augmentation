@@ -88,6 +88,19 @@ class TestSourceCover:
         # Tests correct functionality of deletion of vertices
         # reachable from a critical vertex
         D: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
+        cover: Set = source_cover(D, set(D.nodes))
+        assert_set_equal(cover, {0})
+
+    def test_tree_all_critical_decoy(self):
+        # Tests D to be a tree, all vertices are critical
+        # Source cover is expected to be the root
+        # Tests correct functionality of deletion of vertices
+        # reachable from a critical vertex
+        # There is also one "decoy" - a non-critical vertex 100
+        # that covers two leafs. However, after the deletion,
+        # the vertex 100 does not cover any critical vertex
+        # any more. Hence, it should not be in the cover.
+        D: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
         D.add_edges_from({(100, 50), (100, 51)})
         cover: Set = source_cover(D, set(D.nodes) - {100})
         assert_set_equal(cover, {0})
