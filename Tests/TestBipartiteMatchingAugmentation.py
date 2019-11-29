@@ -196,7 +196,7 @@ class TestBipartiteMatchingAugmentation:
         # Expected source cover is of length 1 if it works correctly.
 
         U: Set = set()
-        num_of_gadgets = 2
+        num_of_gadgets = 50
 
         G: nx.Graph = nx.Graph()
         for i in range(1, num_of_gadgets + 2):
