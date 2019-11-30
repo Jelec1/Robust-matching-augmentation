@@ -1,8 +1,8 @@
 """
 Author: Tomas Jelinek
-Last change: 29.11.2019
+Last change: 30.11.2019
 
-Description: Tests for the source_tarjan(G) function
+Description: Tests for the source_cover(G) function
 """
 
 import networkx as nx

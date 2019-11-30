@@ -1,9 +1,10 @@
 """
 Author: Tomas Jelinek
-Last change: 29.11.2019
+Last change: 30.11.2019
 
 Description: Tests for the bipartite_matching_augmentation(G, M) function
 """
+import math
 
 import networkx as nx
 from Algo.BipartiteMatchingAugmentation import bipartite_matching_augmentation
@@ -249,12 +250,21 @@ class TestBipartiteMatchingAugmentation:
         assert_true(len(L) == 1)
 
     def test_random_graph(self):
-        # Tests random graph, which must be very sparse due to time complexity
-        D: nx.DiGraph = nx.generators.random_graphs.erdos_renyi_graph(10000, 0.001, directed=True)
-        D.remove_node(0)
-        D.remove_edges_from([(u, v) for (u, v) in D.edges() if u < v])
-        G, A, M = D_to_bipartite(D)
-        L = bipartite_matching_augmentation(G, A)
-        assert_true(is_correctly_augmented(G, A, L))
+        # Tests 10 random graphs, which must be very sparse due to time complexity
+        # Also test the approximation factor log(n)
+
+        for i in range(10):
+            D: nx.DiGraph = nx.generators.random_graphs.erdos_renyi_graph(10000, 0.001, directed=True)
+            D.remove_node(0)
+            D.remove_edges_from([(u, v) for (u, v) in D.edges() if u < v])
+            G, A, M = D_to_bipartite(D)
+            L = bipartite_matching_augmentation(G, A)
+            assert_true(is_correctly_augmented(G, A, L))
+
+            C_D = nx.algorithms.components.condensation(D)
+            sources, sinks, isolated = get_sources_sinks_isolated(C_D)
+
+            opt = max(len(sources), len(sinks)) + len(isolated)
+            assert_true(len(L) <= opt * math.log(opt))
 
 
