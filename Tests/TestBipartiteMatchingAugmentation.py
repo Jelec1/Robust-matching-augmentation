@@ -214,7 +214,7 @@ class TestBipartiteMatchingAugmentation:
         # to be added to the graph.
         # Expected source cover is of length 1 if it works correctly.
 
-        U: Set = set()
+        A: Set = set()
         num_of_gadgets = 5000
 
         G: nx.Graph = nx.Graph()
@@ -228,11 +228,11 @@ class TestBipartiteMatchingAugmentation:
             G.add_edge(u1, v2)
             G.add_edge(u2, v1)
             G.add_edge(v2, 't_1')
-            U.add(u1)
-            U.add(u2)
+            A.add(u1)
+            A.add(u2)
 
         G.add_edge('t_1', 't\'_1')
-        U.add('t_1')
+        A.add('t_1')
 
         for i in range(1, num_of_gadgets + 1):
             us = ['t_' + str(4*i + j) for j in range(-2, 2)]
@@ -243,10 +243,11 @@ class TestBipartiteMatchingAugmentation:
             G.add_edges_from([(us[2 * j + 1], vs[2 * j]) for j in range(len(us) // 2)])
             G.add_edge('t_' + str(4*i - 1), 's\'_' + str(2*i+1))
             G.add_edge('t_' + str(4 * i + 1), 's\'_' + str(2 * i + 2))
-            U = U | set(us)
+            A = A | set(us)
 
-        L = bipartite_matching_augmentation(G, U)
+        L = bipartite_matching_augmentation(G, A)
 
+        assert_true(is_correctly_augmented(G, A, L))
         assert_true(len(L) == 1)
 
     def test_random_graph(self):
@@ -265,6 +266,6 @@ class TestBipartiteMatchingAugmentation:
             sources, sinks, isolated = get_sources_sinks_isolated(C_D)
 
             opt = max(len(sources), len(sinks)) + len(isolated)
-            assert_true(len(L) <= opt * math.log(opt))
+            assert_true(len(L) <= opt * math.log(opt, 2))
 
 
