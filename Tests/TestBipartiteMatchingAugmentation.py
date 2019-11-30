@@ -96,8 +96,8 @@ def default_matching_from_D(D: nx.DiGraph):
     """
     edges = {}
     for v in D.nodes:
-        edges[v] = (-1) * v
-        edges[(-1) * v] = v
+        edges[v] = -v
+        edges[-v] = v
 
     return edges
 
