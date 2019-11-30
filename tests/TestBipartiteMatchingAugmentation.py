@@ -2,15 +2,13 @@
 Author: Tomas Jelinek
 Last change: 30.11.2019
 
-Description: Tests for the bipartite_matching_augmentation(G, M) function
+Description: tests for the bipartite_matching_augmentation(G, M) function
 """
-import math
 
 import networkx as nx
-from Algo.BipartiteMatchingAugmentation import bipartite_matching_augmentation
-from Utils.AuxiliaryAlgorithms import bipartite_to_D
-from Exceptions.Exceptions import BipartiteGraphNotAugmentableException
-from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
+from src.algo.BipartiteMatchingAugmentation import bipartite_matching_augmentation
+from src.utils.AuxiliaryAlgorithms import bipartite_to_D, get_sources_sinks_isolated
+from src.exceptions.Exceptions import BipartiteGraphNotAugmentableException
 from nose.tools import assert_true, assert_raises, assert_set_equal, assert_equal
 from typing import Set, Dict
 
@@ -122,7 +120,7 @@ class TestBipartiteMatchingAugmentation:
         assert_set_equal(bipartite_matching_augmentation(G, {0, 2}), set())
 
     def test_simple_needs_to_be_augmented(self):
-        # Tests a simple graph that admits a perfect matching and needs to be augmented
+        # tests a simple graph that admits a perfect matching and needs to be augmented
         G: nx.Graph = nx.Graph()
         G.add_edges_from({(0, 1), (2, 3)})
         assert_set_equal(bipartite_matching_augmentation(G, {0, 2}), {(0, 3), (2, 1)})
@@ -131,7 +129,7 @@ class TestBipartiteMatchingAugmentation:
         assert_set_equal(bipartite_matching_augmentation(G, {0, 2}), {(2, 1)})
 
     def test_more_strong_components(self):
-        # Tests more strong connected component, no augmentation is required
+        # tests more strong connected component, no augmentation is required
         D: nx.DiGraph = nx.DiGraph()
         nx.add_cycle(D, {1, 2})
         nx.add_cycle(D, {3, 4})
@@ -180,7 +178,7 @@ class TestBipartiteMatchingAugmentation:
         assert_true(is_correctly_augmented(G, A, L))
 
     def test_only_critical(self):
-        # Tests only critical vertices in form of trees, paths and stars,
+        # tests only critical vertices in form of trees, paths and stars,
         # expected the algorithm correctly augments G and the augmenting set
         # cardinality correspond the simple bound on Eswaran-Tarjan.
         D: nx.DiGraph = nx.DiGraph()
@@ -251,7 +249,7 @@ class TestBipartiteMatchingAugmentation:
         assert_true(len(L) == 1)
 
     def test_random_graph(self):
-        # Tests 10 random graphs, which must be very sparse due to time complexity
+        # tests 10 random graphs, which must be very sparse due to time complexity
         # Also test the approximation factor log(n)
 
         for i in range(10):

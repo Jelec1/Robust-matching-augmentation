@@ -10,12 +10,11 @@ due to Implementation is based on BINDEWALD, Viktor; HOMMELSHEIM, Felix; MÜHLEN
 
 import networkx as nx
 from typing import Dict, Set
-from Algo.EswaranTarjan import eswaran_tarjan
-from Algo.SourceCover import source_cover
-from Utils.AuxiliaryAlgorithms import fast_traversal
+from src.algo.EswaranTarjan import eswaran_tarjan
+from src.algo.SourceCover import source_cover
+from src.utils.AuxiliaryAlgorithms import fast_traversal
 from networkx.utils.decorators import not_implemented_for
-from Exceptions.Exceptions import BipartiteGraphNotAugmentableException
-import time
+from src.exceptions.Exceptions import BipartiteGraphNotAugmentableException
 
 
 @not_implemented_for('directed')

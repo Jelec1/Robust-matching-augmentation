@@ -2,13 +2,13 @@
 Author: Tomas Jelinek
 Last change: 8.9.2019
 
-Description: Tests for the eswaran_tarjan(G) function
+Description: tests for the eswaran_tarjan(G) function
 """
 
 from nose.tools import assert_set_equal, assert_raises, assert_false, assert_true
 import networkx as nx
-from Algo import EswaranTarjan
-from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
+from src.algo import EswaranTarjan
+from src.utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
 from collections import Set
 
 
@@ -88,7 +88,7 @@ class TestEswaranTarjan:
         assert_raises(nx.NetworkXNotImplemented, EswaranTarjan.eswaran_tarjan, nx.MultiDiGraph())
 
     def test_output_format(self):
-        # Tests the type of the output on an elementary case. Expected a set of tuples of
+        # tests the type of the output on an elementary case. Expected a set of tuples of
         # length 2. We only test the most trivial case in so as not to depend
         # on the correctness of the implementation.
 
@@ -122,14 +122,14 @@ class TestEswaranTarjan:
     --------------------
     """
     def test_A_critical_q_null_p_eq_st(self):
-        # Tests correct behaviour if q = 0 and p = s = t
+        # tests correct behaviour if q = 0 and p = s = t
         G = nx.DiGraph()
         for i in range(0, 5):
             G.add_edge(2*i, 2*i+1)
         assert_true(is_correctly_augmented(G))
 
     def test_A_critical_q_null_p_lower_s_eq_t(self):
-        # Tests correct behaviour if q = 0 and p < s = t
+        # tests correct behaviour if q = 0 and p < s = t
         # To test this, we test in on a "crossroad" graph G
         # E(G) = {(a, m), (m, b), (c, m), (d, m)}
         # We test both if p + 1 = s = t and if the difference if bigger
@@ -147,7 +147,7 @@ class TestEswaranTarjan:
         assert_true(is_correctly_augmented(G))
 
     def test_A_critical_q_null_p_lower_s_lower_t(self):
-        # Tests correct behaviour if q = 0 and p < s < t.
+        # tests correct behaviour if q = 0 and p < s < t.
         # We extend our crossroad graph by extending the central cross
         # one vertex to each side. As previously, we test
         # if s + 1 = t and if the difference is bigger.
@@ -163,7 +163,7 @@ class TestEswaranTarjan:
         assert_true(is_correctly_augmented(G))
 
     def test_A_critical_q_notnull_stp_null(self):
-        # Tests correct behaviour if q != 0 and 0 = p = s = t.
+        # tests correct behaviour if q != 0 and 0 = p = s = t.
         # This will be done using generating number of graphs where
         # no two vertices are connected. G will have both, even and odd number
         # of vertices.
@@ -175,7 +175,7 @@ class TestEswaranTarjan:
             assert_true(is_correctly_augmented(G))
 
     def test_A_critical_q_notnull_p_eq_st_not_null(self):
-        # Tests correct behaviour if q != 0, 0 < p = s = t
+        # tests correct behaviour if q != 0, 0 < p = s = t
         # To test this, we will test cases when p, s, t = {1, 2}
         # and q = {0, 1}
         G = nx.DiGraph()
@@ -194,7 +194,7 @@ class TestEswaranTarjan:
         assert_true(is_correctly_augmented(G))
 
     def test_A_critical_q_notnull_p_lower_s_eq_t(self):
-        # Tests correct behaviour if q != 0 and p < s = t
+        # tests correct behaviour if q != 0 and p < s = t
         # To test this, we test in on a "crossroad" graph G
         # E(G) = {(a, m), (m, b), (c, m), (d, m)}
         # We test both if p + 1 = s = t and if the difference if bigger
@@ -219,7 +219,7 @@ class TestEswaranTarjan:
         assert_true(is_correctly_augmented(G))
 
     def test_A_critical_q_notnull_p_lower_s_lower_t(self):
-        # Tests correct behaviour if q = 0 and p < s < t.
+        # tests correct behaviour if q = 0 and p < s < t.
         # We extend our crossroad graph by extending the central cross
         # one vertex to each side. As previously, we test
         # if s + 1 = t and if the difference is bigger.
@@ -254,7 +254,7 @@ class TestEswaranTarjan:
             assert_true(is_correctly_augmented(G))
 
     def test_several_disjoint_strongly_connected_components(self):
-        # Tests a correct behaviour of connecting isolated vertices when
+        # tests a correct behaviour of connecting isolated vertices when
         # there are more mutually disjoint strongly connected components,
         # this tests correct choice of representative and connecting only
         # isolated vertices.
@@ -268,7 +268,7 @@ class TestEswaranTarjan:
             assert_true(is_correctly_augmented(G))
 
     def test_random_graphs(self):
-        # Tests behaviour on (small) random graphs of different density.
+        # tests behaviour on (small) random graphs of different density.
         # Used to catch graph instances not caught in previous tests,
         # for which special tests should be created afterwards.
         for i in range(1, 100):

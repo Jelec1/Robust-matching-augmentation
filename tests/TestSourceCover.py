@@ -2,11 +2,11 @@
 Author: Tomas Jelinek
 Last change: 30.11.2019
 
-Description: Tests for the source_cover(G) function
+Description: tests for the source_cover(G) function
 """
 
 import networkx as nx
-from Algo.BipartiteMatchingAugmentation import source_cover
+from src.algo.SourceCover import source_cover
 from nose.tools import assert_set_equal, assert_true
 from collections import Set
 
@@ -14,7 +14,7 @@ from collections import Set
 class TestSourceCover:
 
     def test_single_critical(self):
-        # Tests D consisting of single critical vertex
+        # tests D consisting of single critical vertex
         # Source cover expected to cover it
         D: nx.DiGraph = nx.DiGraph()
         D.add_node(0)
@@ -22,7 +22,7 @@ class TestSourceCover:
         assert_set_equal(cover, {0})
 
     def test_no_critical(self):
-        # Tests D consisting of single directed edge
+        # tests D consisting of single directed edge
         # Source cover expected to not cover it
         D: nx.DiGraph = nx.DiGraph()
         D.add_node(0)
@@ -30,7 +30,7 @@ class TestSourceCover:
         assert_set_equal(cover, set())
 
     def test_child_critical(self):
-        # Tests D consisting of non-critical 0 and path to critical 4.
+        # tests D consisting of non-critical 0 and path to critical 4.
         # Source cover is expected to be {0}
         D: nx.DiGraph = nx.path_graph(5, nx.DiGraph())
         D.add_edge(0, 1)
@@ -38,7 +38,7 @@ class TestSourceCover:
         assert_set_equal(cover, {0})
 
     def test_child_non_critical(self):
-        # Tests D consisting of non-critical path.
+        # tests D consisting of non-critical path.
         # Source cover is expected to be empty
         D: nx.DiGraph = nx.DiGraph()
         D.add_edge(0, 1)
@@ -46,7 +46,7 @@ class TestSourceCover:
         assert_set_equal(cover, set())
 
     def test_tree_leafs_critical(self):
-        # Tests D to be a tree, only leafs are critical
+        # tests D to be a tree, only leafs are critical
         # Source cover is expected to be {0} - the root
         D: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
         critical: Set = {node for node in D.nodes if D.out_degree(node) == 0}
@@ -54,7 +54,7 @@ class TestSourceCover:
         assert_set_equal(cover, {0})
 
     def test_tree_leafs_critical_and_isolated(self):
-        # Tests D to be a tree, only leafs are critical
+        # tests D to be a tree, only leafs are critical
         # and set of isolated
         # Source cover is expected to be  root(D1) | isolated
         D1: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
@@ -66,7 +66,7 @@ class TestSourceCover:
         assert_set_equal(cover, critical)
 
     def test_two_disjoint_trees_leafs_critical(self):
-        # Tests two trees, only leafs are critical
+        # tests two trees, only leafs are critical
         # Source cover is expected to be {0} - the root
         D1: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
         D2: nx.DiGraph = nx.balanced_tree(2, 6, nx.DiGraph())
@@ -76,25 +76,25 @@ class TestSourceCover:
         assert_set_equal(cover, {node for node in D.nodes if D.in_degree(node) == 0})  # Only roots form cover
 
     def test_tree_leafs_non_critical(self):
-        # Tests D to be a tree, no vertices are critcal
+        # tests D to be a tree, no vertices are critcal
         # Source cover is expected to be empty
         D: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
         cover: Set = source_cover(D, set())
         assert_set_equal(cover, set())
 
     def test_tree_all_critical(self):
-        # Tests D to be a tree, all vertices are critical
+        # tests D to be a tree, all vertices are critical
         # Source cover is expected to be the root
-        # Tests correct functionality of deletion of vertices
+        # tests correct functionality of deletion of vertices
         # reachable from a critical vertex
         D: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
         cover: Set = source_cover(D, set(D.nodes))
         assert_set_equal(cover, {0})
 
     def test_tree_all_critical_decoy(self):
-        # Tests D to be a tree, all vertices are critical
+        # tests D to be a tree, all vertices are critical
         # Source cover is expected to be the root
-        # Tests correct functionality of deletion of vertices
+        # tests correct functionality of deletion of vertices
         # reachable from a critical vertex
         # There is also one "decoy" - a non-critical vertex 100
         # that covers two leafs. However, after the deletion,
@@ -106,10 +106,10 @@ class TestSourceCover:
         assert_set_equal(cover, {0})
 
     def test_tree_multiple_sources_leafs_critical(self):
-        # Tests D to be a tree, only leafs are critical
+        # tests D to be a tree, only leafs are critical
         # There are multiple sources in the graphs, including two
         # covering all the vertices. However, the optimal solution is
-        # still of size 1. Tests if it correctly does not consider these
+        # still of size 1. tests if it correctly does not consider these
         # additional source.
         D: nx.DiGraph = nx.balanced_tree(2, 5, nx.DiGraph())
         D.add_edges_from({(65, 1), (65, 2), (66, 15), (65, 29), (66, 38), (67, 58)})
@@ -118,7 +118,7 @@ class TestSourceCover:
         assert_true(cover == {0} or cover == {65})  # Only two correct options
 
     def test_tree_multiple_sources_tree_critical(self):
-        # Tests D to be a tree, whole tree is critical
+        # tests D to be a tree, whole tree is critical
         # There are multiple sources in the graphs, including two
         # covering all the vertices. However, the optimal solution is
         # still of size 1. In addition to test_tree_multiple_sources_leafs_critical(),
