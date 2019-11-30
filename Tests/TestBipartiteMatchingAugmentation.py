@@ -251,7 +251,7 @@ class TestBipartiteMatchingAugmentation:
         D.remove_node(0)
         D.remove_edges_from([(u, v) for (u, v) in D.edges() if u < v])
         G, A, M = D_to_bipartite(D)
-        L = bipartite_matching_augmentation(G, A, M)
+        L = bipartite_matching_augmentation(G, A)
         assert_true(is_correctly_augmented(G, A, L))
 
 
