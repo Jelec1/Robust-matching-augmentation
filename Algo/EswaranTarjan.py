@@ -48,7 +48,6 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False, sourcesSinksIso
     """
 
     G_condensation: nx.DiGraph
-    start = time.time()
 
     if not is_condensation:
         G_condensation = nx.algorithms.condensation(G)
@@ -67,8 +66,6 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False, sourcesSinksIso
     t: int = len(sinks)  # Number ou sources
     q: int = len(isolated)  # Number of isolated vertices
 
-    print("----Computing SourcesSinksIsolated", time.time() - start)
-    start = time.time()
     is_reversed = False
 
     # If G_condensation has more sources than sinks, algorithm does not work.
@@ -108,9 +105,6 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False, sourcesSinksIso
             w_list.append(w)
             sources.remove(v)
             sinks.remove(w)
-
-    print("----Marking procedure", time.time() - start)
-    start = time.time()
 
     p: int = len(v_list)  # This is equivalent with p proposed in the original algorithm
 
@@ -156,8 +150,6 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False, sourcesSinksIso
                 A.add((w_list[t - 1], x_list[0]))  # Covers (w_t-1, x_0)
                 A.add((x_list[q - 1], v_list[0]))  # Covers (x_q-1, v_0) closing the cycle
 
-    print("----Connecting", time.time() - start)
-    start = time.time()
 
     if is_reversed:
         A = set(map(lambda e: (e[1], e[0]), A))  # We simply swap the edge direction

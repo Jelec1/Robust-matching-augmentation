@@ -62,19 +62,14 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
     if len(A) <= 1:  # Graph consisting of only one vertex at each bipartition cannot be augmented.
         raise BipartiteGraphNotAugmentableException("G cannot be augmented.")
 
-    start = time.time()
-    verystart = time.time()
+    #start = time.time()
+    #verystart = time.time()
 
     if M is None:  # User can specify her own matching for speed-up
         M: Dict = nx.algorithms.bipartite.eppstein_matching(G, A)
 
-    print("Constructing matching", time.time() - start)
-    start = time.time()
-
-    """
-    New piece of code
-    """
-    sources: Set = set()
+    #print("Constructing matching", time.time() - start)
+    #start = time.time()
 
     D: nx.DiGraph = nx.DiGraph()
     if M is None:
@@ -90,10 +85,13 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
                 if uPrime != u:
                     D.add_edge(u, uPrime)
 
-    print("Computing D", time.time() - start)
-    start = time.time()
+    #print("Computing D", time.time() - start)
+    #start = time.time()
 
     D_condensation: nx.DiGraph = nx.algorithms.components.condensation(D)  # Condensation - acyclic digraph
+
+    #print("Computing sources, sinks, isolated", time.time() - start)
+    #start = time.time()
 
     X: Set = set()  # A set of vertices of D_condensation corresponding to trivial strong components of D
     isolated: Set = set()  # Set of isolated vertices
@@ -120,27 +118,27 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
         elif outDegree == 0:
             sinks.add(vertex)
 
-    print("Computing condensation", time.time() - start)
-    start = time.time()
+    #print("Computing condensation", time.time() - start)
+    #start = time.time()
 
     A_0 = D_condensation
     A_1 = D_condensation.reverse(copy=False)
 
-    print("Making two copies", time.time() - start)
-    start = time.time()
+    #print("Making two copies", time.time() - start)
+    #start = time.time()
 
     if len(X) == 0:  # If there is no trivial strong component, G admits a perfect matching after edge removal
         return set()
 
-    print("Deleting reachable from X", time.time() - start)
-    start = time.time()
+    #print("Deleting reachable from X", time.time() - start)
+    #start = time.time()
 
     # Use source_cover to choose ln(n) approximation of choice of sources that cover all sinks in C_0, resp. C_1
     C_0 = source_cover(A_0, X, (sources, sinks, isolated))
     C_1 = source_cover(A_1, X, (sinks, sources, isolated))
 
-    print("Twice source cover", time.time() - start)
-    start = time.time()
+    #print("Twice source cover", time.time() - start)
+    #start = time.time()
 
     # We now determine vertices that lie either on C_1X paths or XC_2 paths
     # Vertices on C_1X paths are those visited when traveling from C_1 to X on
@@ -187,8 +185,8 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
         vert = next(iter(D_hat_vertices))
         D_hat_vertices.add(next(iter(set(D_condensation.nodes) - {vert})))
 
-    print("Computing D_hat", time.time() - start)
-    start = time.time()
+    #print("Computing D_hat", time.time() - start)
+    #start = time.time()
 
     #  Update sources, sinks, isolated as intersection with D_hat_vertices
     sources &= D_hat_vertices
@@ -198,9 +196,9 @@ def bipartite_matching_augmentation(G: nx.Graph, A: Set, M: Dict = None):
     D_hat = nx.classes.function.induced_subgraph(D_condensation, D_hat_vertices)
     L_star: Set = eswaran_tarjan(D_hat, is_condensation=True, sourcesSinksIsolated=(sources, sinks, isolated))
 
-    print("Eswaran Tarjan", time.time() - start)
-    print("TOTAL:", time.time() - verystart)
-    start = time.time()
+    #print("Eswaran Tarjan", time.time() - start)
+    #print("TOTAL:", time.time() - verystart)
+    #print("")
 
     # Map vertices from L to vertices of L*
     return set(map(lambda e: (next(iter(D_condensation.nodes[e[1]]['members'])),

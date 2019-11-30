@@ -49,16 +49,11 @@ def source_cover(D: nx.DiGraph, critical_vertices: Set,
     else:
         sources, sinks, isolated = sourcesSinksIsolated
     sources = sources | isolated  # We consider each isolated as a source
-    # sinks = sinks | isolated  # We consider each isolated as a sink
 
     deleted_vertices = set()  # All vertices reachable from a critical vertex
 
-    # weak_sinks = sinks & critical_vertices
-
     children: Dict[object, Set] = {}  # Contains all reachable critical vertices from given source
 
-    print("----Sources/weak_sinks/isolated", time.time() - start)
-    start = time.time()
 
     def action_on_vertex_delete_reachable(vertex):
         return True
@@ -90,9 +85,6 @@ def source_cover(D: nx.DiGraph, critical_vertices: Set,
         visited = set()  # Set of visited vertices, to avoid processing twice
         children[source] = set()
         fast_traversal(D, source, action_on_vertex_add_sinks, action_on_neighbor_add_sinks)
-
-    print("----Flattening D", time.time() - start)
-    start = time.time()
 
     # Inverts the children table, i.e. assigns each source pointer on its "father" source
     fathers: Dict[object, Set] = {}
@@ -131,6 +123,4 @@ def source_cover(D: nx.DiGraph, critical_vertices: Set,
             else:  # If given source does not cover any new, delete it from the heap
                 heapDelete(heap, source)
 
-    print("----Greedy set cover", time.time() - start)
-    start = time.time()
     return cover

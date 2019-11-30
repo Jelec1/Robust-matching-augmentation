@@ -104,7 +104,7 @@ def default_matching_from_D(D: nx.DiGraph):
 
 
 class TestBipartiteMatchingAugmentation:
-    """
+
     def test_unaugmentable(self):
         # Testing on the only two cases when the bipartite graph cannot be augmented.
         # This happens when it consists only of two vertices, connected or disconnected
@@ -249,7 +249,7 @@ class TestBipartiteMatchingAugmentation:
 
         assert_true(is_correctly_augmented(G, A, L))
         assert_true(len(L) == 1)
-"""
+
     def test_random_graph(self):
         # Tests 10 random graphs, which must be very sparse due to time complexity
         # Also test the approximation factor log(n)
@@ -262,13 +262,5 @@ class TestBipartiteMatchingAugmentation:
             L = bipartite_matching_augmentation(G, A)
             assert_true(is_correctly_augmented(G, A, L))
 
-            #C_D = nx.algorithms.components.condensation(D)
-            #critical = {vertex for vertex in C_D.nodes if len(C_D.nodes[vertex]['members']) == 1}
-            #sources, sinks, isolated = get_sources_sinks_isolated(C_D)
-            #sources &= critical
-            #sinks &= critical
-
-            # opt = max(len(sources), len(sinks)) + len(isolated)
-            #assert_true(len(L) <= opt * math.log(len(G), 2))
 
 
