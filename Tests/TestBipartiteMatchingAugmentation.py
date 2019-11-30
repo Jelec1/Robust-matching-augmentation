@@ -4,20 +4,35 @@ Last change: 29.11.2019
 
 Description: Tests for the bipartite_matching_augmentation(G, M) function
 """
+
 import networkx as nx
 from Algo.BipartiteMatchingAugmentation import bipartite_matching_augmentation
+from Utils.AuxiliaryAlgorithms import bipartite_to_D
 from Exceptions.Exceptions import BipartiteGraphNotAugmentableException
-from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated, bipartite_to_D
-from nose.tools import assert_true, assert_equal, assert_raises, assert_set_equal
+from Utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
+from nose.tools import assert_true, assert_raises, assert_set_equal, assert_equal
 from typing import Set, Dict
 
 
 def D_to_bipartite(D: nx.DiGraph) -> (nx.Graph, Set):
+    """
+    Parameters
+        ----------
+        D : NetworkX DiGraph
+           A directed graph. D may not contain node "0"!
+
+        Returns
+        -------
+        (G, A, M)
+            G - a corresponding bipartite graph
+            A - a bipartition of G
+            M - a default matching
+    """
     M = default_matching_from_D(D)
     G = nx.Graph()
     G.add_edges_from(set(map(lambda e: (e[1], M[e[0]]), D.edges)))
     G.add_edges_from(set(map(lambda k: (k, M[k]), M)))
-    return G, set(D.nodes)
+    return G, set(D.nodes), M
 
 
 def is_correctly_augmented(G: nx.Graph, A: Set, L: Set = None) -> bool:
@@ -25,7 +40,7 @@ def is_correctly_augmented(G: nx.Graph, A: Set, L: Set = None) -> bool:
 
     Parameters
     ----------
-    G : NetworkX DiGraph
+    G : NetworkX Graph
        A bipartite graph.
     A : Set
         A bipartition of G.
@@ -119,11 +134,11 @@ class TestBipartiteMatchingAugmentation:
         D: nx.DiGraph = nx.DiGraph()
         nx.add_cycle(D, {1, 2})
         nx.add_cycle(D, {3, 4})
-        G, A = D_to_bipartite(D)
+        G, A, M = D_to_bipartite(D)
         assert_true(is_correctly_augmented(G, A))
         assert_set_equal(bipartite_matching_augmentation(G, A), set())
         nx.add_cycle(D, {5, 6, 7})
-        G, A = D_to_bipartite(D)
+        G, A, M = D_to_bipartite(D)
         L: Set = bipartite_matching_augmentation(G, A)
         assert_true(is_correctly_augmented(G, A, L))
         assert_set_equal(L, set())
@@ -136,7 +151,7 @@ class TestBipartiteMatchingAugmentation:
         D: nx.DiGraph = nx.DiGraph()
         nx.add_cycle(D, {1, 2, 3})
         D.add_node(4)
-        G, A = D_to_bipartite(D)
+        G, A, M = D_to_bipartite(D)
         L = bipartite_matching_augmentation(G, A)
         assert_equal(len(L), 2)
         assert_true(is_correctly_augmented(G, A))
@@ -154,7 +169,7 @@ class TestBipartiteMatchingAugmentation:
         D.add_nodes_from({i for i in range(6, 10)})
         D.add_edge(5, 8)
         D.add_edge(9, 4)
-        G, A = D_to_bipartite(D)
+        G, A, M = D_to_bipartite(D)
 
         L = bipartite_matching_augmentation(G, A)
         assert_equal(len(L), 3)
@@ -170,7 +185,7 @@ class TestBipartiteMatchingAugmentation:
         nx.add_path(D, {i for i in range(5, 10)})
         D.add_nodes_from({i for i in range(10, 20)})
 
-        G, A = D_to_bipartite(D)
+        G, A, M = D_to_bipartite(D)
         assert_true(is_correctly_augmented(G, A))
         sources, sinks, isolated = get_sources_sinks_isolated(D)
         s, t, q = len(sources), len(sinks), len(isolated)
@@ -180,7 +195,7 @@ class TestBipartiteMatchingAugmentation:
         D.clear()
         D = nx.balanced_tree(2, 13, nx.DiGraph())
         D.remove_node(0)
-        G, A = D_to_bipartite(D)
+        G, A, M = D_to_bipartite(D)
         sources, sinks, isolated = get_sources_sinks_isolated(D)
         s, t, q = len(sources), len(sinks), len(isolated)
         for i in range(1):
@@ -196,7 +211,7 @@ class TestBipartiteMatchingAugmentation:
         # Expected source cover is of length 1 if it works correctly.
 
         U: Set = set()
-        num_of_gadgets = 50
+        num_of_gadgets = 5000
 
         G: nx.Graph = nx.Graph()
         for i in range(1, num_of_gadgets + 2):
@@ -229,3 +244,14 @@ class TestBipartiteMatchingAugmentation:
         L = bipartite_matching_augmentation(G, U)
 
         assert_true(len(L) == 1)
+
+    def test_random_graph(self):
+        # Tests random graph, which must be very sparse due to time complexity
+        D: nx.DiGraph = nx.generators.random_graphs.erdos_renyi_graph(10000, 0.001, directed=True)
+        D.remove_node(0)
+        D.remove_edges_from([(u, v) for (u, v) in D.edges() if u < v])
+        G, A, M = D_to_bipartite(D)
+        L = bipartite_matching_augmentation(G, A, M)
+        assert_true(is_correctly_augmented(G, A, L))
+
+
