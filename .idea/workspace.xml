@@ -225,14 +225,7 @@
       <workItem from="1574806300963" duration="9825000" />
       <workItem from="1575048337236" duration="5971000" />
       <workItem from="1575056180294" duration="15791000" />
-      <workItem from="1575108075342" duration="1693000" />
-    </task>
-    <task id="LOCAL-00004" summary="Overhauled augment algorithm up to constructing an input for source cover">
-      <created>1566248804841</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1566248804841</updated>
+      <workItem from="1575108075342" duration="4240000" />
     </task>
     <task id="LOCAL-00005" summary="Rewritten augment graph method, which needs to be still improved, though, written as neatly and clearly as possible">
       <created>1566421568995</created>
@@ -570,7 +563,14 @@
       <option name="project" value="LOCAL" />
       <updated>1575108222677</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="Test for malicious instance">
+      <created>1575109878441</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1575109878441</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="TodoView">
@@ -652,6 +652,6 @@
     <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$TestEswaranTarjan.coverage" NAME="TestEswaranTarjan Coverage Results" MODIFIED="1575053253198" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$Test.coverage" NAME="Test Coverage Results" MODIFIED="1574814955329" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Algo" />
     <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$BipartiteMatchingAugmentation.coverage" NAME="BipartiteMatchingAugmentation Coverage Results" MODIFIED="1567947218445" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Algo" />
-    <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$TestBipartiteMatchingAugmentation.coverage" NAME="TestBipartiteMatchingAugmentation Coverage Results" MODIFIED="1575109780064" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/Robust_Matching_Augmentation$TestBipartiteMatchingAugmentation.coverage" NAME="TestBipartiteMatchingAugmentation Coverage Results" MODIFIED="1575111120400" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>
