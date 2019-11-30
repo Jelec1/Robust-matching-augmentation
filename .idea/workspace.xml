@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7bb0d0d6-1a1a-4ae6-ac2c-9e59be494d4f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Tests/TestBipartiteMatchingAugmentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/TestBipartiteMatchingAugmentation.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -224,14 +223,7 @@
       <workItem from="1574513510028" duration="1433000" />
       <workItem from="1574806300963" duration="9825000" />
       <workItem from="1575048337236" duration="5971000" />
-      <workItem from="1575056180294" duration="13023000" />
-    </task>
-    <task id="LOCAL-00001" summary="Initial commit">
-      <created>1563831110424</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1563831110424</updated>
+      <workItem from="1575056180294" duration="13267000" />
     </task>
     <task id="LOCAL-00002" summary="SourceCover implementation">
       <created>1564354248504</created>
@@ -569,7 +561,14 @@
       <option name="project" value="LOCAL" />
       <updated>1575104576123</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="Test for malicious instance">
+      <created>1575105052277</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1575105052277</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TodoView">

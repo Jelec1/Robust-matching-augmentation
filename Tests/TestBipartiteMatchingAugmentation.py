@@ -162,6 +162,9 @@ class TestBipartiteMatchingAugmentation:
         assert_true(is_correctly_augmented(G, A))
 
     def test_strong_components_and_critical_vertices(self):
+        # Special instance of a graph where there are strong components
+        # and several critical vertices connected to them. Correct solution
+        # manually checked.
         D: nx.DiGraph = nx.DiGraph()
         nx.add_cycle(D, {1, 2, 3})
         nx.add_cycle(D, {4, 5})
