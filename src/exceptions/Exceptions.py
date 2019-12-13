@@ -7,6 +7,6 @@ Description: Implementation of exceptions relating to the bipartite matching aug
 import networkx as nx
 
 
-class BipartiteGraphNotAugmentableException(nx.NetworkXException):
+class bipartite_ghraph_not_augmentable_exception(nx.NetworkXException):
     """Exception raised if a bipartite graph cannot be augmented so that
     the graph admits a perfect matching even after a single arbitrary edge is removed."""

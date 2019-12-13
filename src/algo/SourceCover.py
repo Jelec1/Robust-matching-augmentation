@@ -10,7 +10,7 @@ Description: Implementation of the source cover algorithm proposed by
 
 import networkx as nx
 from typing import Dict, Set
-from src.utils.AuxiliaryAlgorithms import get_sources_sinks_isolated, fast_traversal, heapDelete, heapIncreaseValue
+from src.utils.AuxiliaryFunctions import get_sources_sinks_isolated, fast_traversal, heap_delete, heap_increase_value
 from networkx.utils.heaps import PairingHeap
 
 
@@ -41,8 +41,6 @@ def source_cover(D: nx.DiGraph, critical_vertices: Set,
         1805.01299
 
     """
-    import time
-    start = time.time()
 
     if sourcesSinksIsolated is None:
         sources, sinks, isolated = get_sources_sinks_isolated(D)
@@ -119,8 +117,8 @@ def source_cover(D: nx.DiGraph, critical_vertices: Set,
 
         for source in updated_sources:  # Now update info about all updated sources
             if len(children[source]) > 0:  # If still covers anything, update (increase) the value in min-heap
-                heapIncreaseValue(heap, source, max_value - len(children[source]))
+                heap_increase_value(heap, source, max_value - len(children[source]))
             else:  # If given source does not cover any new, delete it from the heap
-                heapDelete(heap, source)
+                heap_delete(heap, source)
 
     return cover

@@ -7,31 +7,10 @@ Description: tests for the bipartite_matching_augmentation(G, M) function
 
 import networkx as nx
 from src.algo.BipartiteMatchingAugmentation import bipartite_matching_augmentation
-from src.utils.AuxiliaryAlgorithms import bipartite_to_D, get_sources_sinks_isolated
-from src.exceptions.Exceptions import BipartiteGraphNotAugmentableException
+from src.utils.AuxiliaryFunctions import bipartite_to_D, get_sources_sinks_isolated, D_to_bipartite
+from src.exceptions.Exceptions import bipartite_ghraph_not_augmentable_exception
 from nose.tools import assert_true, assert_raises, assert_set_equal, assert_equal
-from typing import Set, Dict
-
-
-def D_to_bipartite(D: nx.DiGraph) -> (nx.Graph, Set):
-    """
-    Parameters
-        ----------
-        D : NetworkX DiGraph
-           A directed graph. D may not contain node "0"!
-
-        Returns
-        -------
-        (G, A, M)
-            G - a corresponding bipartite graph
-            A - a bipartition of G
-            M - a default matching
-    """
-    M = default_matching_from_D(D)
-    G = nx.Graph()
-    G.add_edges_from(set(map(lambda e: (e[1], M[e[0]]), D.edges)))
-    G.add_edges_from(set(map(lambda k: (k, M[k]), M)))
-    return G, set(D.nodes), M
+from typing import Set
 
 
 def is_correctly_augmented(G: nx.Graph, A: Set, L: Set = None) -> bool:
@@ -74,33 +53,6 @@ def is_correctly_augmented(G: nx.Graph, A: Set, L: Set = None) -> bool:
     return result
 
 
-def default_matching_from_D(D: nx.DiGraph):
-    """ Returns a perfect matching of a bipartite graph G that corresponds to D
-
-    Parameters
-    ----------
-    D : NetworkX DiGraph
-       An arbitrary directed graph. Assumes that the vertices are positive integers between 1 to n
-
-    Returns
-    -------
-    Dict
-        A dictionary of a perfect matching on G, where vertices from the upper bipartition are
-        inversions of the original integers with regard to addition (negative integers).
-
-    Notes
-    -----
-    Makes use of the observation that there is an isomorphism between each D that
-    is constructed with regard to a different perfect matching.
-    """
-    edges = {}
-    for v in D.nodes:
-        edges[v] = -v
-        edges[-v] = v
-
-    return edges
-
-
 class TestBipartiteMatchingAugmentation:
 
     def test_unaugmentable(self):
@@ -108,10 +60,10 @@ class TestBipartiteMatchingAugmentation:
         # This happens when it consists only of two vertices, connected or disconnected
         G: nx.Graph = nx.Graph()
         G.add_nodes_from({0, 1})
-        assert_raises(BipartiteGraphNotAugmentableException, bipartite_matching_augmentation, G, {0})
+        assert_raises(bipartite_ghraph_not_augmentable_exception, bipartite_matching_augmentation, G, {0})
 
         G.add_edge(0, 1)
-        assert_raises(BipartiteGraphNotAugmentableException, bipartite_matching_augmentation, G, {0})
+        assert_raises(bipartite_ghraph_not_augmentable_exception, bipartite_matching_augmentation, G, {0})
 
     def test_simple_already_robust(self):
         # Test a simple graph that is already robust

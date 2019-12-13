@@ -8,8 +8,8 @@ Description: tests for the eswaran_tarjan(G) function
 from nose.tools import assert_set_equal, assert_raises, assert_false, assert_true
 import networkx as nx
 from src.algo import EswaranTarjan
-from src.utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
-from collections import Set
+from src.utils.AuxiliaryFunctions import get_sources_sinks_isolated
+from typing import Set
 
 
 def arcs_for_augmentation(G: nx.DiGraph) -> int:
@@ -121,11 +121,12 @@ class TestEswaranTarjan:
     in regard to s, t, p, q as defined in eswaran_tarjan
     --------------------
     """
+
     def test_A_critical_q_null_p_eq_st(self):
         # tests correct behaviour if q = 0 and p = s = t
         G = nx.DiGraph()
         for i in range(0, 5):
-            G.add_edge(2*i, 2*i+1)
+            G.add_edge(2 * i, 2 * i + 1)
         assert_true(is_correctly_augmented(G))
 
     def test_A_critical_q_null_p_lower_s_eq_t(self):
@@ -262,7 +263,7 @@ class TestEswaranTarjan:
         for i in range(0, 5):
             G: nx.DiGraph = nx.DiGraph()
             for j in range(2 ** i + n):
-                C = nx.cycle_graph(i+2, create_using=nx.DiGraph())
+                C = nx.cycle_graph(i + 2, create_using=nx.DiGraph())
                 G = nx.disjoint_union(G, C)
             n = n + 1
             assert_true(is_correctly_augmented(G))

@@ -8,7 +8,7 @@ Description: tests for the source_cover(G) function
 import networkx as nx
 from src.algo.SourceCover import source_cover
 from nose.tools import assert_set_equal, assert_true
-from collections import Set
+from typing import Set
 
 
 class TestSourceCover:

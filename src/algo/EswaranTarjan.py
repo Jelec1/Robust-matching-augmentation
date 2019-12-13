@@ -12,7 +12,7 @@ In: The Next Wave in Computing, Optimization, and Decision Technologies. Springe
 import networkx as nx
 from typing import List, Set
 from networkx.utils.decorators import not_implemented_for
-from src.utils.AuxiliaryAlgorithms import get_sources_sinks_isolated
+from src.utils.AuxiliaryFunctions import get_sources_sinks_isolated
 
 
 @not_implemented_for('undirected')
@@ -148,7 +148,6 @@ def eswaran_tarjan(G: nx.DiGraph, is_condensation: bool = False, sourcesSinksIso
             else:  # q > 0
                 A.add((w_list[t - 1], x_list[0]))  # Covers (w_t-1, x_0)
                 A.add((x_list[q - 1], v_list[0]))  # Covers (x_q-1, v_0) closing the cycle
-
 
     if is_reversed:
         A = set(map(lambda e: (e[1], e[0]), A))  # We simply swap the edge direction
